@@ -111,7 +111,7 @@ function doCpuMove() {
       if (occupyingPiece) {
         const value =
           PIECE_VALUES[occupyingPiece.type] - PIECE_VALUES[piece.type];
-        console.log(value);
+
         if (bestCapture == null || value > bestCapture.value) {
           bestCapture = { piece, square, value };
         }

@@ -21,7 +21,8 @@ class Game {
   piecesElement = null;
   cellsElement = null;
   statusText = null;
-  gameMode = "cpu";
+  // gameMode = "cpu";
+  gameMode = "1v1";
 
   constructor() {
     this.clickLayer = document.querySelector("#click-layer");

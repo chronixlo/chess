@@ -68,6 +68,20 @@ body {
   filter: sepia(1);
 }
 
+.cell.last-move-from::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #8f84;
+}
+
+.cell.last-move-to::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #9d94;
+}
+
 .cell.valid-move::after {
   content: "";
   position: absolute;
