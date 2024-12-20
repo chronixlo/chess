@@ -1,0 +1,99 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #112;
+  overflow: hidden;
+  --dark-square: #444;
+  --light-square: #aaa;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#board-outer {
+  padding: 10px;
+  background: #666;
+  border-radius: 8px;
+}
+
+#board {
+  position: relative;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  background: var(--dark-square);
+  position: relative;
+}
+
+.cell:nth-child(even) {
+  background: var(--light-square);
+}
+
+.row:nth-child(odd) .cell {
+  background: var(--light-square);
+}
+
+.row:nth-child(odd) .cell:nth-child(even) {
+  background: var(--dark-square);
+}
+
+.cell.selected {
+  filter: sepia(1);
+}
+
+.cell.valid-move::after {
+  content: "";
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  inset: 35%;
+  background: #888;
+  border-radius: 50%;
+}
+
+#pieces {
+  position: absolute;
+  inset: 0;
+}
+
+#click-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.piece {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  filter: drop-shadow(1px 1px 2px #0007);
+}
+
+.piece svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.piece.white path {
+  fill: #fff;
+}
+
+.piece.black path {
+  fill: #000;
+}
