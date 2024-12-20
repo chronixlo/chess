@@ -1,4 +1,3 @@
-import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
 import knight from "../images/knight.svg?raw";
@@ -27,7 +26,7 @@ export default class Knight extends Piece {
     return squares
       .filter((square) => isInside(square))
       .filter((square) => {
-        const isOccupied = gameState.whitePieces.some(
+        const isOccupied = this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         );
 

@@ -6,6 +6,7 @@ body {
   margin: 0;
   background: #112;
   overflow: hidden;
+  font-family: monospace;
   --dark-square: #444;
   --light-square: #aaa;
 }
@@ -17,6 +18,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 16px;
+}
+
+#sidebar {
+  padding: 10px;
+  background: #666;
+  border-radius: 8px;
+  color: #222;
+  width: 200px;
+  text-align: center;
 }
 
 #board-outer {

@@ -17,23 +17,28 @@ export default class King extends Piece {
 
     // kingside
     if (deltaX === 2) {
-      const rook = gameState.whitePieces.find(
-        (piece) => piece.x === 7 && piece.y === 7
+      const rook = this.ownPieces.find(
+        (piece) => piece.x === 7 && piece.y === (this.color === "white" ? 7 : 0)
       );
       rook.move({ x: rook.y - 2, y: rook.y });
     }
     // queenside
     if (deltaX === -2) {
-      const rook = gameState.whitePieces.find(
-        (piece) => piece.x === 0 && piece.y === 7
+      const rook = this.ownPieces.find(
+        (piece) => piece.x === 0 && piece.y === (this.color === "white" ? 7 : 0)
       );
       rook.move({ x: rook.x + 3, y: rook.y });
     }
 
     super.move(square);
 
-    gameState.canWhiteCastleKingside = false;
-    gameState.canWhiteCastleQueenside = false;
+    if (this.color === "white") {
+      gameState.canWhiteCastleKingside = false;
+      gameState.canWhiteCastleQueenside = false;
+    } else {
+      gameState.canWhiteCastleKingside = false;
+      gameState.canWhiteCastleQueenside = false;
+    }
   }
 
   getValidMoves() {
@@ -58,7 +63,7 @@ export default class King extends Piece {
     }
 
     return squares.filter(isInside).filter((square) => {
-      const isOccupied = gameState.whitePieces.some(
+      const isOccupied = this.ownPieces.some(
         (piece) => piece.x === square.x && piece.y === square.y
       );
 

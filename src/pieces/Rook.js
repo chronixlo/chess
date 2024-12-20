@@ -19,10 +19,18 @@ export default class Rook extends Piece {
     super.move(square);
 
     if (this.file === 0) {
-      gameState.canWhiteCastleQueenside = false;
+      if (this.color === "white") {
+        gameState.canWhiteCastleQueenside = false;
+      } else {
+        gameState.canBlackCastleQueenside = false;
+      }
     }
     if (this.file === 7) {
-      gameState.canWhiteCastleKingside = false;
+      if (this.color === "white") {
+        gameState.canWhiteCastleKingside = false;
+      } else {
+        gameState.canBlackCastleKingside = false;
+      }
     }
   }
 
@@ -38,7 +46,7 @@ export default class Rook extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -48,7 +56,7 @@ export default class Rook extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -65,7 +73,7 @@ export default class Rook extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -75,7 +83,7 @@ export default class Rook extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -92,7 +100,7 @@ export default class Rook extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -102,7 +110,7 @@ export default class Rook extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -119,7 +127,7 @@ export default class Rook extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -129,7 +137,7 @@ export default class Rook extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -138,7 +146,7 @@ export default class Rook extends Piece {
     }
 
     return squares.filter((square) => {
-      const isOccupied = gameState.whitePieces.some(
+      const isOccupied = this.ownPieces.some(
         (piece) => piece.x === square.x && piece.y === square.y
       );
 

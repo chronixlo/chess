@@ -1,5 +1,4 @@
 import { BOARD_SIZE } from "../consts";
-import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
 import bishop from "../images/bishop.svg?raw";
@@ -25,7 +24,7 @@ export default class Bishop extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -35,7 +34,7 @@ export default class Bishop extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -52,7 +51,7 @@ export default class Bishop extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -62,7 +61,7 @@ export default class Bishop extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -79,7 +78,7 @@ export default class Bishop extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -89,7 +88,7 @@ export default class Bishop extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -106,7 +105,7 @@ export default class Bishop extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -116,7 +115,7 @@ export default class Bishop extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -125,7 +124,7 @@ export default class Bishop extends Piece {
     }
 
     return squares.filter((square) => {
-      const isOccupied = gameState.whitePieces.some(
+      const isOccupied = this.ownPieces.some(
         (piece) => piece.x === square.x && piece.y === square.y
       );
 

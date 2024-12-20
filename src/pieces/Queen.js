@@ -1,5 +1,4 @@
 import { BOARD_SIZE } from "../consts";
-import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
 import queen from "../images/queen.svg?raw";
@@ -25,7 +24,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -35,7 +34,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -52,7 +51,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -62,7 +61,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -79,7 +78,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -89,7 +88,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -106,7 +105,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -116,7 +115,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -133,7 +132,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -143,7 +142,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -160,7 +159,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -170,7 +169,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -187,7 +186,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -197,7 +196,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -214,7 +213,7 @@ export default class Queen extends Piece {
       }
 
       if (
-        gameState.whitePieces.some(
+        this.ownPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -224,7 +223,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        gameState.blackPieces.some(
+        this.opposingPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -233,7 +232,7 @@ export default class Queen extends Piece {
     }
 
     return squares.filter((square) => {
-      const isOccupied = gameState.whitePieces.some(
+      const isOccupied = this.ownPieces.some(
         (piece) => piece.x === square.x && piece.y === square.y
       );
 

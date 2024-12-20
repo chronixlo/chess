@@ -16,7 +16,6 @@ export default class Piece {
     element.classList.add("piece", this.color);
     element.style.transform = `translate(${this.x * 50}px, ${this.y * 50}px)`;
 
-    gameState.piecesElement.appendChild(element);
     this.element = element;
   }
 
@@ -27,9 +26,32 @@ export default class Piece {
     this.element.style.transform = `translate(${square.x * 50}px, ${
       square.y * 50
     }px)`;
+
+    const capturedPieceIndex = this.opposingPieces.findIndex(
+      (piece) => piece.x === square.x && piece.y === square.y
+    );
+
+    if (capturedPieceIndex !== -1) {
+      this.opposingPieces[capturedPieceIndex].element.parentNode.removeChild(
+        this.opposingPieces[capturedPieceIndex].element
+      );
+      this.opposingPieces.splice(capturedPieceIndex, 1);
+    }
   }
 
   getValidMoves() {
     return [];
+  }
+
+  get ownPieces() {
+    return this.color === "white"
+      ? gameState.whitePieces
+      : gameState.blackPieces;
+  }
+
+  get opposingPieces() {
+    return this.color === "black"
+      ? gameState.whitePieces
+      : gameState.blackPieces;
   }
 }

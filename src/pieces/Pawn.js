@@ -1,5 +1,4 @@
 import Piece from "./Piece";
-import gameState from "../gameState";
 import pawn from "../images/pawn.svg?raw";
 
 export default class Pawn extends Piece {
@@ -14,22 +13,33 @@ export default class Pawn extends Piece {
   getValidMoves() {
     const moves = [];
 
-    const possibleMoves = [
-      ...(this.y !== 0 ? [{ x: this.x, y: this.y - 1 }] : []),
-      ...(this.y === 6 ? [{ x: this.x, y: this.y - 2 }] : []),
-    ];
+    const possibleMoves =
+      this.color === "white"
+        ? [
+            ...(this.y !== 0 ? [{ x: this.x, y: this.y - 1 }] : []),
+            ...(this.y === 6 ? [{ x: this.x, y: this.y - 2 }] : []),
+          ]
+        : [
+            ...(this.y !== 7 ? [{ x: this.x, y: this.y + 1 }] : []),
+            ...(this.y === 1 ? [{ x: this.x, y: this.y + 2 }] : []),
+          ];
 
-    const possibleCaptures = [
-      { x: this.x - 1, y: this.y - 1 },
-      { x: this.x + 1, y: this.y - 1 },
-    ];
+    const possibleCaptures =
+      this.color === "white"
+        ? [
+            { x: this.x - 1, y: this.y - 1 },
+            { x: this.x + 1, y: this.y - 1 },
+          ]
+        : [
+            { x: this.x - 1, y: this.y + 1 },
+            { x: this.x + 1, y: this.y + 1 },
+          ];
 
     moves.push(
       ...possibleMoves.filter((square) => {
-        const isOccupied = [
-          ...gameState.blackPieces,
-          ...gameState.whitePieces,
-        ].some((piece) => piece.x === square.x && piece.y === square.y);
+        const isOccupied = [...this.opposingPieces, ...this.ownPieces].some(
+          (piece) => piece.x === square.x && piece.y === square.y
+        );
 
         if (isOccupied) {
           return false;
@@ -41,7 +51,7 @@ export default class Pawn extends Piece {
 
     moves.push(
       ...possibleCaptures.filter((square) => {
-        const occupyingPiece = gameState.blackPieces.find(
+        const occupyingPiece = this.opposingPieces.find(
           (piece) => piece.x === square.x && piece.y === square.y
         );
 
