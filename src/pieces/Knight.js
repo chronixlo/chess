@@ -1,9 +1,16 @@
 import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
+import knight from "../images/knight.svg?raw";
 
 export default class Knight extends Piece {
   type = "knight";
+
+  constructor(props) {
+    super(props);
+
+    this.element.innerHTML = knight;
+  }
 
   getValidMoves = () => {
     const squares = [

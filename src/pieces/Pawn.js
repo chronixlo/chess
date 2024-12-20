@@ -1,8 +1,15 @@
 import Piece from "./Piece";
 import gameState from "../gameState";
+import pawn from "../images/pawn.svg?raw";
 
 export default class Pawn extends Piece {
   type = "pawn";
+
+  constructor(props) {
+    super(props);
+
+    this.element.innerHTML = pawn;
+  }
 
   getValidMoves() {
     const moves = [];

@@ -1,15 +1,23 @@
+import { BOARD_SIZE } from "../consts";
 import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
+import queen from "../images/queen.svg?raw";
 
 export default class Queen extends Piece {
   type = "queen";
+
+  constructor(props) {
+    super(props);
+
+    this.element.innerHTML = queen;
+  }
 
   getValidMoves() {
     const squares = [];
 
     // -x
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x - i, y: this.y };
 
       if (!isInside(square)) {
@@ -36,7 +44,7 @@ export default class Queen extends Piece {
     }
 
     // -y
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x, y: this.y - i };
 
       if (!isInside(square)) {
@@ -63,7 +71,7 @@ export default class Queen extends Piece {
     }
 
     // +x
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x + i, y: this.y };
 
       if (!isInside(square)) {
@@ -90,7 +98,7 @@ export default class Queen extends Piece {
     }
 
     // +y
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x, y: this.y + i };
 
       if (!isInside(square)) {
@@ -117,7 +125,7 @@ export default class Queen extends Piece {
     }
 
     // -x
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x - i, y: this.y - i };
 
       if (!isInside(square)) {
@@ -144,7 +152,7 @@ export default class Queen extends Piece {
     }
 
     // -y
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x + i, y: this.y - i };
 
       if (!isInside(square)) {
@@ -171,7 +179,7 @@ export default class Queen extends Piece {
     }
 
     // +x
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x + i, y: this.y + i };
 
       if (!isInside(square)) {
@@ -198,7 +206,7 @@ export default class Queen extends Piece {
     }
 
     // +y
-    for (let i = 1; i < 8; i++) {
+    for (let i = 1; i < BOARD_SIZE; i++) {
       const square = { x: this.x - i, y: this.y + i };
 
       if (!isInside(square)) {

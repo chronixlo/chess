@@ -1,9 +1,16 @@
 import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
+import king from "../images/king.svg?raw";
 
 export default class King extends Piece {
   type = "king";
+
+  constructor(props) {
+    super(props);
+
+    this.element.innerHTML = king;
+  }
 
   move(square) {
     const deltaX = square.x - this.x;

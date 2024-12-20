@@ -1,3 +1,10 @@
+import { BOARD_SIZE } from "./consts";
+
 export const isInside = (square) => {
-  return square.x < 8 && square.x >= 0 && square.y < 8 && square.y >= 0;
+  return (
+    square.x < BOARD_SIZE &&
+    square.x >= 0 &&
+    square.y < BOARD_SIZE &&
+    square.y >= 0
+  );
 };
