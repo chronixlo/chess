@@ -37,7 +37,7 @@ export default class Pawn extends Piece {
 
     moves.push(
       ...possibleMoves.filter((square) => {
-        const isOccupied = [...this.opposingPieces, ...this.ownPieces].some(
+        const isOccupied = [...this.enemyPieces, ...this.ownPieces].some(
           (piece) => piece.x === square.x && piece.y === square.y
         );
 
@@ -51,7 +51,7 @@ export default class Pawn extends Piece {
 
     moves.push(
       ...possibleCaptures.filter((square) => {
-        const occupyingPiece = this.opposingPieces.find(
+        const occupyingPiece = this.enemyPieces.find(
           (piece) => piece.x === square.x && piece.y === square.y
         );
 

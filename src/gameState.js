@@ -14,8 +14,12 @@ class Game {
 
   canWhiteCastleQueenside = true;
   canWhiteCastleKingside = true;
+
   canBlackCastleQueenside = true;
   canBlacCastleKingside = true;
+
+  whiteChecked = false;
+  blackChecked = false;
 
   clickLayer = null;
   piecesElement = null;

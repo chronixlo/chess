@@ -44,15 +44,31 @@ export default class Piece {
     );
     targetSquare.classList.add("last-move-to");
 
-    const capturedPieceIndex = this.opposingPieces.findIndex(
+    const capturedPieceIndex = this.enemyPieces.findIndex(
       (piece) => piece.x === square.x && piece.y === square.y
     );
 
     if (capturedPieceIndex !== -1) {
-      this.opposingPieces[capturedPieceIndex].element.parentNode.removeChild(
-        this.opposingPieces[capturedPieceIndex].element
+      this.enemyPieces[capturedPieceIndex].element.parentNode.removeChild(
+        this.enemyPieces[capturedPieceIndex].element
       );
-      this.opposingPieces.splice(capturedPieceIndex, 1);
+      this.enemyPieces.splice(capturedPieceIndex, 1);
+    }
+
+    const enemyKing = this.enemyPieces.find((p) => p.type === "king");
+    const isCheck = this.ownPieces.some((piece) => {
+      const moves = piece.getValidMoves();
+      return moves.some(
+        (square) => square.x === enemyKing.x && square.y === enemyKing.y
+      );
+    });
+
+    if (isCheck) {
+      gameState.blackChecked = true;
+      const kingSquare = gameState.cellsElement.querySelector(
+        `.cell-${enemyKing.x}-${enemyKing.y}`
+      );
+      kingSquare.classList.add("check");
     }
   }
 
@@ -66,7 +82,7 @@ export default class Piece {
       : gameState.blackPieces;
   }
 
-  get opposingPieces() {
+  get enemyPieces() {
     return this.color === "black"
       ? gameState.whitePieces
       : gameState.blackPieces;

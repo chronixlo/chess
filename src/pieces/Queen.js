@@ -34,7 +34,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -61,7 +61,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -88,7 +88,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -115,7 +115,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -142,7 +142,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -169,7 +169,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -196,7 +196,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
@@ -223,7 +223,7 @@ export default class Queen extends Piece {
       squares.push(square);
 
       if (
-        this.opposingPieces.some(
+        this.enemyPieces.some(
           (piece) => piece.x === square.x && piece.y === square.y
         )
       ) {
