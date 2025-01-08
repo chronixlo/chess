@@ -15,16 +15,37 @@ export default function getValidKingMoves(gameState, square, color) {
 
   // castles
   if (
-    color === "w"
-      ? gameState.canWhiteCastleQueenside
-      : gameState.canBlackCastleQueenside
+    color === "w" &&
+    gameState.canWhiteCastleQueenside &&
+    !gameState.whiteChecked &&
+    gameState.board[square.y][square.x - 1] === "" &&
+    gameState.board[square.y][square.x - 2] === "" &&
+    gameState.board[square.y][square.x - 3] === ""
   ) {
     squares.push({ x: square.x - 2, y: square.y });
-  }
-  if (
-    color === "w"
-      ? gameState.canWhiteCastleKingside
-      : gameState.canBlackCastleKingside
+  } else if (
+    color === "b" &&
+    gameState.canBlackCastleQueenside &&
+    !gameState.blackChecked &&
+    gameState.board[square.y][square.x - 1] === "" &&
+    gameState.board[square.y][square.x - 2] === "" &&
+    gameState.board[square.y][square.x - 3] === ""
+  ) {
+    squares.push({ x: square.x - 2, y: square.y });
+  } else if (
+    color === "w" &&
+    gameState.canWhiteCastleKingside &&
+    !gameState.whiteChecked &&
+    gameState.board[square.y][square.x + 1] === "" &&
+    gameState.board[square.y][square.x + 2] === ""
+  ) {
+    squares.push({ x: square.x + 2, y: square.y });
+  } else if (
+    color === "b" &&
+    gameState.canBlackCastleKingside &&
+    !gameState.blackChecked &&
+    gameState.board[square.y][square.x + 1] === "" &&
+    gameState.board[square.y][square.x + 2] === ""
   ) {
     squares.push({ x: square.x + 2, y: square.y });
   }
