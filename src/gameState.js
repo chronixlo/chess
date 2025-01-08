@@ -1,19 +1,13 @@
-import b from "./images/bishop.svg?raw";
-import q from "./images/queen.svg?raw";
-import r from "./images/rook.svg?raw";
-import k from "./images/king.svg?raw";
-import p from "./images/pawn.svg?raw";
-import n from "./images/knight.svg?raw";
 import { BOARD_SIZE } from "./consts";
 import { getValidMoves } from "./utils";
 
-const pieceSVGs = {
-  b,
-  q,
-  r,
-  k,
-  p,
-  n,
+const filledPieceCharacters = {
+  b: "♝",
+  q: "♛",
+  r: "♜",
+  k: "♚",
+  p: "♟",
+  n: "♞",
 };
 
 export class Game {
@@ -271,7 +265,7 @@ export class Game {
           const element = document.createElement("div");
           element.classList.add("piece", square[0] === "w" ? "white" : "black");
           element.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
-          element.innerHTML = pieceSVGs[square[1]];
+          element.textContent = filledPieceCharacters[square[1]];
 
           this.piecesElement.appendChild(element);
         }
