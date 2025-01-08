@@ -12,6 +12,10 @@ export default class Queen extends Piece {
     this.element.innerHTML = queen;
   }
 
+  clone(props) {
+    return new Queen(props);
+  }
+
   getValidMoves() {
     const squares = [];
 

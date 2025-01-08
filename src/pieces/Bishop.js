@@ -12,6 +12,10 @@ export default class Bishop extends Piece {
     this.element.innerHTML = bishop;
   }
 
+  clone(props) {
+    return new Bishop(props);
+  }
+
   getValidMoves() {
     const squares = [];
 

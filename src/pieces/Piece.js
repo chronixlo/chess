@@ -1,4 +1,4 @@
-import gameState from "../gameState";
+import { resultsInCheck } from "../utils";
 
 export default class Piece {
   x = null;
@@ -6,6 +6,7 @@ export default class Piece {
   element = null;
   color = null;
   type = null;
+  gameState = null;
 
   constructor({ x, y, color }) {
     this.x = x;
@@ -20,14 +21,14 @@ export default class Piece {
   }
 
   move(square) {
-    gameState.cellsElement
+    this.gameState.cellsElement
       .querySelector(".last-move-from")
       ?.classList.remove("last-move-from");
-    gameState.cellsElement
+    this.gameState.cellsElement
       .querySelector(".last-move-to")
       ?.classList.remove("last-move-to");
 
-    const fromSquare = gameState.cellsElement.querySelector(
+    const fromSquare = this.gameState.cellsElement.querySelector(
       `.cell-${this.x}-${this.y}`
     );
     fromSquare.classList.add("last-move-from");
@@ -39,7 +40,7 @@ export default class Piece {
       square.y * 50
     }px)`;
 
-    const targetSquare = gameState.cellsElement.querySelector(
+    const targetSquare = this.gameState.cellsElement.querySelector(
       `.cell-${square.x}-${square.y}`
     );
     targetSquare.classList.add("last-move-to");
@@ -55,36 +56,28 @@ export default class Piece {
       this.enemyPieces.splice(capturedPieceIndex, 1);
     }
 
-    const enemyKing = this.enemyPieces.find((p) => p.type === "king");
-    const isCheck = this.ownPieces.some((piece) => {
-      const moves = piece.getValidMoves();
-      return moves.some(
-        (square) => square.x === enemyKing.x && square.y === enemyKing.y
-      );
-    });
-
-    if (isCheck) {
-      gameState.blackChecked = true;
-      const kingSquare = gameState.cellsElement.querySelector(
-        `.cell-${enemyKing.x}-${enemyKing.y}`
-      );
-      kingSquare.classList.add("check");
-    }
+    this.gameState.updateChecked();
   }
 
   getValidMoves() {
     return [];
   }
 
+  getValidMovesNoCheck() {
+    return this.getValidMoves().filter((square) =>
+      resultsInCheck(this, square)
+    );
+  }
+
   get ownPieces() {
     return this.color === "white"
-      ? gameState.whitePieces
-      : gameState.blackPieces;
+      ? this.gameState.whitePieces
+      : this.gameState.blackPieces;
   }
 
   get enemyPieces() {
     return this.color === "black"
-      ? gameState.whitePieces
-      : gameState.blackPieces;
+      ? this.gameState.whitePieces
+      : this.gameState.blackPieces;
   }
 }

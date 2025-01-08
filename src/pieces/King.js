@@ -1,4 +1,3 @@
-import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
 import king from "../images/king.svg?raw";
@@ -10,6 +9,10 @@ export default class King extends Piece {
     super(props);
 
     this.element.innerHTML = king;
+  }
+
+  clone(props) {
+    return new King(props);
   }
 
   move(square) {
@@ -33,11 +36,11 @@ export default class King extends Piece {
     super.move(square);
 
     if (this.color === "white") {
-      gameState.canWhiteCastleKingside = false;
-      gameState.canWhiteCastleQueenside = false;
+      this.gameState.canWhiteCastleKingside = false;
+      this.gameState.canWhiteCastleQueenside = false;
     } else {
-      gameState.canWhiteCastleKingside = false;
-      gameState.canWhiteCastleQueenside = false;
+      this.gameState.canWhiteCastleKingside = false;
+      this.gameState.canWhiteCastleQueenside = false;
     }
   }
 
@@ -55,10 +58,10 @@ export default class King extends Piece {
     }
 
     // castles
-    if (gameState.canWhiteCastleQueenside) {
+    if (this.gameState.canWhiteCastleQueenside) {
       squares.push({ x: this.x - 2, y: this.y });
     }
-    if (gameState.canWhiteCastleKingside) {
+    if (this.gameState.canWhiteCastleKingside) {
       squares.push({ x: this.x + 2, y: this.y });
     }
 

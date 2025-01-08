@@ -10,6 +10,10 @@ export default class Pawn extends Piece {
     this.element.innerHTML = pawn;
   }
 
+  clone(props) {
+    return new Pawn(props);
+  }
+
   getValidMoves() {
     const moves = [];
 

@@ -11,6 +11,10 @@ export default class Knight extends Piece {
     this.element.innerHTML = knight;
   }
 
+  clone(props) {
+    return new Knight(props);
+  }
+
   getValidMoves = () => {
     const squares = [
       { x: this.x + 1, y: this.y + 2 },

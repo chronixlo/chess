@@ -34,7 +34,7 @@ const onPieceClick = (piece) => {
   selectedPiece = piece;
 
   // show valid moves
-  const validMoves = piece.getValidMoves();
+  const validMoves = piece.getValidMovesNoCheck();
 
   validMoves.forEach((tile) => {
     const validMoveTile = gameState.cellsElement.querySelector(
@@ -67,7 +67,7 @@ const onBoardClick = (e) => {
     return;
   }
 
-  const validMoves = selectedPiece.getValidMoves();
+  const validMoves = selectedPiece.getValidMovesNoCheck();
 
   if (
     !validMoves.some(
@@ -102,7 +102,7 @@ function doCpuMove() {
 
   // check for captures
   for (let piece of ownPieces) {
-    const squares = piece.getValidMoves();
+    const squares = piece.getValidMovesNoCheck();
     for (let square of squares) {
       const occupyingPiece = enemyPieces.find(
         (p) => p.x === square.x && p.y === square.y
@@ -124,11 +124,10 @@ function doCpuMove() {
   } else {
     // random move
     for (let piece of ownPieces) {
-      const squares = piece.getValidMoves();
+      const squares = piece.getValidMovesNoCheck();
 
       if (squares.length) {
         piece.move(squares[0]);
-        console.log(piece, squares[0]);
         break;
       }
     }

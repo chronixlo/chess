@@ -1,5 +1,4 @@
 import { BOARD_SIZE } from "../consts";
-import gameState from "../gameState";
 import { isInside } from "../utils";
 import Piece from "./Piece";
 import rook from "../images/rook.svg?raw";
@@ -15,21 +14,25 @@ export default class Rook extends Piece {
     this.element.innerHTML = rook;
   }
 
+  clone(props) {
+    return new Rook(props);
+  }
+
   move(square) {
     super.move(square);
 
     if (this.file === 0) {
       if (this.color === "white") {
-        gameState.canWhiteCastleQueenside = false;
+        this.gameState.canWhiteCastleQueenside = false;
       } else {
-        gameState.canBlackCastleQueenside = false;
+        this.gameState.canBlackCastleQueenside = false;
       }
     }
     if (this.file === 7) {
       if (this.color === "white") {
-        gameState.canWhiteCastleKingside = false;
+        this.gameState.canWhiteCastleKingside = false;
       } else {
-        gameState.canBlackCastleKingside = false;
+        this.gameState.canBlackCastleKingside = false;
       }
     }
   }
