@@ -8,3 +8,12 @@ export const PIECE_VALUES = {
   q: 9,
   k: 100,
 };
+
+export const PIECE_CHARACTERS = {
+  b: "♝",
+  q: "♛",
+  r: "♜",
+  k: "♚",
+  p: "♟",
+  n: "♞",
+};

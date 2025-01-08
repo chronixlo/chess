@@ -1,14 +1,5 @@
-import { BOARD_SIZE } from "./consts";
+import { BOARD_SIZE, PIECE_CHARACTERS } from "./consts";
 import { getValidMoves } from "./utils";
-
-const filledPieceCharacters = {
-  b: "♝",
-  q: "♛",
-  r: "♜",
-  k: "♚",
-  p: "♟",
-  n: "♞",
-};
 
 export class Game {
   turn = 0;
@@ -311,7 +302,7 @@ export class Game {
           const element = document.createElement("div");
           element.classList.add("piece", square[0] === "w" ? "white" : "black");
           element.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
-          element.textContent = filledPieceCharacters[square[1]];
+          element.textContent = PIECE_CHARACTERS[square[1]];
 
           this.piecesElement.appendChild(element);
         }
