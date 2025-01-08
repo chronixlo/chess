@@ -9,7 +9,7 @@ for (let y = 0; y < BOARD_SIZE; y++) {
   gameState.cellsElement.appendChild(row);
   for (let x = 0; x < BOARD_SIZE; x++) {
     const cell = document.createElement("div");
-    cell.classList.add("cell", "cell-" + x + "-" + y);
+    cell.classList.add("cell", `cell-${x}-${y}`);
     row.appendChild(cell);
   }
 }
@@ -41,7 +41,7 @@ const onPieceClick = (square, piece) => {
 
   validMoves.forEach((tile) => {
     const validMoveTile = gameState.cellsElement.querySelector(
-      ".cell-" + tile.x + "-" + tile.y
+      `.cell-${tile.x}-${tile.y}`
     );
     validMoveTile.classList.add("valid-move");
     validMoveTiles.push(validMoveTile);
@@ -98,39 +98,66 @@ const onBoardClick = (e) => {
 };
 
 function doCpuMove() {
-  const ownPieces = gameState.blackPieces;
-  const enemyPieces = gameState.whitePieces;
-
   let bestCapture = null;
 
   // check for captures
-  for (let piece of ownPieces) {
-    const squares = piece.getValidMovesNoCheck();
-    for (let square of squares) {
-      const occupyingPiece = enemyPieces.find(
-        (p) => p.x === square.x && p.y === square.y
-      );
+  for (let y = 0; y < BOARD_SIZE; y++) {
+    for (let x = 0; x < BOARD_SIZE; x++) {
+      const piece = gameState.board[y][x];
+      if (piece?.[0] === "b") {
+        const squares = getValidMovesNoCheck(
+          gameState,
+          {
+            x,
+            y,
+          },
+          gameState.board[y][x]
+        );
 
-      if (occupyingPiece) {
-        const value =
-          PIECE_VALUES[occupyingPiece.type] - PIECE_VALUES[piece.type];
+        for (let square of squares) {
+          const occupyingPiece = gameState.board[square.y][square.x];
 
-        if (bestCapture == null || value > bestCapture.value) {
-          bestCapture = { piece, square, value };
+          if (occupyingPiece?.[0] === "w") {
+            const value =
+              PIECE_VALUES[occupyingPiece[1]] - PIECE_VALUES[piece[1]];
+
+            if (bestCapture == null || value > bestCapture.value) {
+              bestCapture = { fromSquare: { x, y }, toSquare: square, value };
+            }
+          }
         }
       }
     }
   }
 
   if (bestCapture) {
-    bestCapture.piece.move(bestCapture.square);
+    gameState.move(bestCapture.fromSquare, bestCapture.toSquare);
   } else {
     // random move
-    for (let piece of ownPieces) {
-      const squares = piece.getValidMovesNoCheck();
+
+    const pieceCoordinates = [];
+
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        const piece = gameState.board[y][x];
+        if (piece?.[0] === "b") {
+          pieceCoordinates.push({ x, y });
+        }
+      }
+    }
+
+    pieceCoordinates.sort(() => Math.random() - 0.5);
+
+    for (let square of pieceCoordinates) {
+      const squares = getValidMovesNoCheck(
+        gameState,
+        square,
+        gameState.board[square.y][square.x]
+      );
 
       if (squares.length) {
-        piece.move(squares[0]);
+        const toSquare = squares[Math.floor(Math.random() * squares.length)];
+        gameState.move(square, toSquare);
         break;
       }
     }

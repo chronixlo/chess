@@ -26,8 +26,8 @@ export class Game {
   piecesElement = null;
   cellsElement = null;
   statusText = null;
-  // gameMode = "cpu";
-  gameMode = "1v1";
+  gameMode = "cpu";
+  // gameMode = "1v1";
 
   sim = false;
 
@@ -289,7 +289,7 @@ export class Game {
 
 export default new Game({
   board: `br,bn,bb,bq,bk,bb,bn,br
-bp,bp,wp,bp,bp,bp,bp,bp
+bp,bp,bp,bp,bp,bp,bp,bp
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
