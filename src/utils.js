@@ -41,9 +41,9 @@ export function getValidMovesNoCheck(gameState, square, piece) {
 
   return validMoves.filter((newSquare) => {
     const newGameState = new Game({
+      ...gameState,
       board: gameState.getBoardString(),
       sim: true,
-      turn: gameState.turn,
     });
     newGameState.move(square, newSquare);
     newGameState.endTurn();

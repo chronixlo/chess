@@ -115,7 +115,17 @@ function doCpuMove() {
         );
 
         for (let square of squares) {
-          const occupyingPiece = gameState.board[square.y][square.x];
+          let occupyingPiece = gameState.board[square.y][square.x];
+
+          if (
+            gameState.whiteEnPassant?.x === square.x &&
+            gameState.whiteEnPassant?.y === square.y
+          ) {
+            occupyingPiece =
+              gameState.board[gameState.whiteEnPassant.y - 1][
+                gameState.whiteEnPassant.x
+              ];
+          }
 
           if (occupyingPiece?.[0] === "w") {
             const value =

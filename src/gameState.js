@@ -44,6 +44,15 @@ export class Game {
     this.board = props.board.split("\n").map((r) => r.split(","));
     this.turn = props.turn;
 
+    this.canWhiteCastleQueenside = props.canWhiteCastleQueenside ?? true;
+    this.canWhiteCastleKingside = props.canWhiteCastleKingside ?? true;
+    this.canBlackCastleQueenside = props.canBlackCastleQueenside ?? true;
+    this.canBlackCastleKingside = props.canBlackCastleKingside ?? true;
+    this.whiteChecked = props.whiteChecked ?? false;
+    this.blackChecked = props.blackChecked ?? false;
+    this.whiteEnPassant = props.whiteEnPassant;
+    this.blackEnPassant = props.blackEnPassant;
+
     this.init();
   }
 
