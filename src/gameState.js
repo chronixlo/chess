@@ -65,6 +65,9 @@ export class Game {
   }
 
   updateChecked() {
+    this.blackChecked = false;
+    this.whiteChecked = false;
+
     if (!this.sim) {
       this.cellsElement
         .querySelectorAll(".check")
@@ -293,6 +296,10 @@ export class Game {
     }
 
     this.updateChecked();
+
+    if (!this.sim) {
+      console.log(this);
+    }
   }
 
   render() {
