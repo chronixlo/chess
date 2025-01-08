@@ -1,16 +1,23 @@
+import b from "./images/bishop.svg?raw";
+import q from "./images/queen.svg?raw";
+import r from "./images/rook.svg?raw";
+import k from "./images/king.svg?raw";
+import p from "./images/pawn.svg?raw";
+import n from "./images/knight.svg?raw";
 import { BOARD_SIZE } from "./consts";
-import Bishop from "./pieces/Bishop";
-import King from "./pieces/King";
-import Knight from "./pieces/Knight";
-import Pawn from "./pieces/Pawn";
-import Queen from "./pieces/Queen";
-import Rook from "./pieces/Rook";
+import { getValidMoves } from "./utils";
+
+const pieceSVGs = {
+  b,
+  q,
+  r,
+  k,
+  p,
+  n,
+};
 
 export class Game {
   turn = 0;
-
-  whitePieces = [];
-  blackPieces = [];
 
   canWhiteCastleQueenside = true;
   canWhiteCastleKingside = true;
@@ -30,47 +37,71 @@ export class Game {
 
   sim = false;
 
-  constructor(whitePieces, blackPieces, turn, sim = true) {
+  constructor(props) {
     this.clickLayer = document.querySelector("#click-layer");
     this.piecesElement = document.querySelector("#pieces");
     this.cellsElement = document.querySelector("#cells");
     this.statusText = document.querySelector("#status-text");
 
-    this.sim = sim;
+    this.sim = props.sim;
+    this.board = props.board.split("\n").map((r) => r.split(","));
+    this.turn = props.turn;
 
-    this.init(whitePieces, blackPieces, turn);
+    this.init();
   }
 
-  init(whitePieces, blackPieces, turn) {
+  init() {
     if (!this.sim) {
       this.setStatusText("White to move");
-    }
 
-    this.whitePieces = whitePieces;
-    this.blackPieces = blackPieces;
-    this.turn = turn;
-
-    this.whitePieces.forEach((p) => (p.gameState = this));
-    this.blackPieces.forEach((p) => (p.gameState = this));
-
-    if (!this.sim) {
-      this.whitePieces.forEach((piece) =>
-        this.piecesElement.appendChild(piece.element)
-      );
-      this.blackPieces.forEach((piece) =>
-        this.piecesElement.appendChild(piece.element)
-      );
+      this.render();
     }
   }
 
   updateChecked() {
-    const blackKing = this.blackPieces.find((p) => p.type === "king");
-    this.blackChecked = this.whitePieces.some((piece) => {
-      const moves = piece.getValidMoves();
-      return moves.some(
-        (square) => square.x === blackKing.x && square.y === blackKing.y
-      );
-    });
+    if (!this.sim) {
+      this.cellsElement
+        .querySelectorAll(".check")
+        .forEach((tile) => tile.classList.remove("check"));
+    }
+
+    let blackKing;
+
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        if (this.board[y][x] === "bk") {
+          blackKing = {
+            x,
+            y,
+          };
+          break;
+        }
+      }
+    }
+
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        if (this.board[y][x]?.[0] === "w") {
+          const moves = getValidMoves(
+            this,
+            {
+              x,
+              y,
+            },
+            this.board[y][x]
+          );
+
+          if (
+            moves.some(
+              (square) => square.x === blackKing.x && square.y === blackKing.y
+            )
+          ) {
+            this.blackChecked = true;
+            break;
+          }
+        }
+      }
+    }
 
     if (!this.sim && this.blackChecked) {
       const blackKingSquare = this.cellsElement.querySelector(
@@ -79,13 +110,45 @@ export class Game {
       blackKingSquare.classList.add("check");
     }
 
-    const whiteKing = this.whitePieces.find((p) => p.type === "king");
-    this.whiteChecked = this.blackPieces.some((piece) => {
-      const moves = piece.getValidMoves();
-      return moves.some(
-        (square) => square.x === whiteKing.x && square.y === whiteKing.y
-      );
-    });
+    //
+
+    let whiteKing;
+
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        if (this.board[y][x] === "wk") {
+          whiteKing = {
+            x,
+            y,
+          };
+          break;
+        }
+      }
+    }
+
+    for (let y = 0; y < BOARD_SIZE; y++) {
+      for (let x = 0; x < BOARD_SIZE; x++) {
+        if (this.board[y][x]?.[0] === "b") {
+          const moves = getValidMoves(
+            this,
+            {
+              x,
+              y,
+            },
+            this.board[y][x]
+          );
+
+          if (
+            moves.some(
+              (square) => square.x === whiteKing.x && square.y === whiteKing.y
+            )
+          ) {
+            this.whiteChecked = true;
+            break;
+          }
+        }
+      }
+    }
 
     if (!this.sim && this.whiteChecked) {
       const whiteKingSquare = this.cellsElement.querySelector(
@@ -95,12 +158,125 @@ export class Game {
     }
   }
 
+  move(fromSquare, toSquare) {
+    const movingPiece = this.board[fromSquare.y][fromSquare.x];
+
+    if (movingPiece === "wk") {
+      const deltaX = toSquare.x - fromSquare.x;
+
+      // kingside castle
+      if (deltaX === 2) {
+        const rook = {
+          x: 7,
+          y: 7,
+        };
+        this.move(rook, { x: rook.x - 2, y: rook.y });
+      }
+      // queenside castle
+      if (deltaX === -2) {
+        const rook = {
+          x: 0,
+          y: 7,
+        };
+        this.move(rook, { x: rook.x + 3, y: rook.y });
+      }
+
+      this.canWhiteCastleQueenside = false;
+      this.canWhiteCastleKingside = false;
+    } else if (movingPiece === "bk") {
+      const deltaX = toSquare.x - fromSquare.x;
+
+      // kingside castle
+      if (deltaX === 2) {
+        const rook = {
+          x: 7,
+          y: 0,
+        };
+        this.move(rook, { x: rook.x - 2, y: rook.y });
+      }
+      // queenside castle
+      if (deltaX === -2) {
+        const rook = {
+          x: 0,
+          y: 0,
+        };
+        this.move(rook, { x: rook.x + 3, y: rook.y });
+      }
+
+      this.canBlackCastleQueenside = false;
+      this.canBlackCastleKingside = false;
+    }
+
+    if (movingPiece === "wr") {
+      if (this.canWhiteCastleQueenside && fromSquare.x === 0) {
+        this.canWhiteCastleQueenside = false;
+      } else if (this.canWhiteCastleKingside && fromSquare.x === 7) {
+        this.canWhiteCastleKingside = false;
+      }
+    } else if (movingPiece === "br") {
+      if (this.canBlackCastleQueenside && fromSquare.x === 0) {
+        this.canBlackCastleQueenside = false;
+      } else if (this.canBlackCastleKingside && fromSquare.x === 7) {
+        this.canBlackCastleKingside = false;
+      }
+    }
+
+    this.board[toSquare.y][toSquare.x] = this.board[fromSquare.y][fromSquare.x];
+    this.board[fromSquare.y][fromSquare.x] = "";
+
+    // promotion
+    if (movingPiece === "wp" && toSquare.y === 0) {
+      this.board[toSquare.y][toSquare.x] = "wq";
+    } else if (movingPiece === "bp" && toSquare.y === 7) {
+      this.board[toSquare.y][toSquare.x] = "bq";
+    }
+
+    if (!this.sim) {
+      this.cellsElement
+        .querySelector(".last-move-from")
+        ?.classList.remove("last-move-from");
+      this.cellsElement
+        .querySelector(".last-move-to")
+        ?.classList.remove("last-move-to");
+
+      const fromSquareElement = this.cellsElement.querySelector(
+        `.cell-${fromSquare.x}-${fromSquare.y}`
+      );
+      fromSquareElement.classList.add("last-move-from");
+
+      const targetSquare = this.cellsElement.querySelector(
+        `.cell-${toSquare.x}-${toSquare.y}`
+      );
+      targetSquare.classList.add("last-move-to");
+    }
+  }
+
   endTurn() {
     this.turn = 1 - this.turn;
 
     if (!this.sim) {
       this.setStatusText((this.turn === 0 ? "White" : "Black") + " to move");
+      this.render();
     }
+
+    this.updateChecked();
+  }
+
+  render() {
+    this.piecesElement.innerHTML = "";
+
+    this.board.forEach((rank, y) => {
+      rank.forEach((square, x) => {
+        if (square !== "") {
+          const element = document.createElement("div");
+          element.classList.add("piece", square[0] === "w" ? "white" : "black");
+          element.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+          element.innerHTML = pieceSVGs[square[1]];
+
+          this.piecesElement.appendChild(element);
+        }
+      });
+    });
   }
 
   setStatusText(text) {
@@ -111,36 +287,29 @@ export class Game {
     this.gameMode = mode;
     this.init();
   }
+
+  getBoardString() {
+    return this.board.map((rank) => rank.join(",")).join("\n");
+  }
 }
 
-export default new Game(
-  [
-    ...new Array(BOARD_SIZE)
-      .fill(null)
-      .map((_, idx) => new Pawn({ x: idx, y: 6, color: "white" })),
-    new Rook({ x: 0, y: 7, color: "white" }),
-    new Rook({ x: 7, y: 7, color: "white" }),
-    new Knight({ x: 1, y: 7, color: "white" }),
-    new Knight({ x: 6, y: 7, color: "white" }),
-    new Bishop({ x: 2, y: 7, color: "white" }),
-    new Bishop({ x: 5, y: 7, color: "white" }),
-    new Queen({ x: 3, y: 7, color: "white" }),
-    new King({ x: 4, y: 7, color: "white" }),
-  ],
+export default new Game({
+  board: `br,bn,bb,bq,bk,bb,bn,br
+bp,bp,wp,bp,bp,bp,bp,bp
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+wp,wp,wp,wp,wp,wp,wp,wp
+wr,wn,wb,wq,wk,wb,wn,wr`,
+  turn: 0,
+});
 
-  [
-    ...new Array(BOARD_SIZE)
-      .fill(null)
-      .map((_, idx) => new Pawn({ x: idx, y: 1, color: "black" })),
-    new Rook({ x: 0, y: 0, color: "black" }),
-    new Rook({ x: 7, y: 0, color: "black" }),
-    new Knight({ x: 1, y: 0, color: "black" }),
-    new Knight({ x: 6, y: 0, color: "black" }),
-    new Bishop({ x: 2, y: 0, color: "black" }),
-    new Bishop({ x: 5, y: 0, color: "black" }),
-    new Queen({ x: 3, y: 0, color: "black" }),
-    new King({ x: 4, y: 0, color: "black" }),
-  ],
-  0,
-  false
-);
+`br,bn,bb,bq,bk,bb,bn,br
+bp,bp,bp,bp,bp,bp,bp,bp
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+wp,wp,wp,wp,wp,wp,wp,wp
+wr,wn,wb,wq,wk,wb,wn,wr`;

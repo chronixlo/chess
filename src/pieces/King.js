@@ -1,80 +1,35 @@
-import { isInside } from "../utils";
-import Piece from "./Piece";
-import king from "../images/king.svg?raw";
+import { isInside, isOwnOccupied } from "../utils";
 
-export default class King extends Piece {
-  type = "king";
+export default function getValidKingMoves(gameState, square, color) {
+  const squares = [];
 
-  constructor(props) {
-    super(props);
-
-    this.element.innerHTML = king;
-  }
-
-  clone(props) {
-    return new King(props);
-  }
-
-  move(square) {
-    const deltaX = square.x - this.x;
-
-    // kingside
-    if (deltaX === 2) {
-      const rook = this.ownPieces.find(
-        (piece) => piece.x === 7 && piece.y === (this.color === "white" ? 7 : 0)
-      );
-      rook.move({ x: rook.y - 2, y: rook.y });
-    }
-    // queenside
-    if (deltaX === -2) {
-      const rook = this.ownPieces.find(
-        (piece) => piece.x === 0 && piece.y === (this.color === "white" ? 7 : 0)
-      );
-      rook.move({ x: rook.x + 3, y: rook.y });
-    }
-
-    super.move(square);
-
-    if (this.color === "white") {
-      this.gameState.canWhiteCastleKingside = false;
-      this.gameState.canWhiteCastleQueenside = false;
-    } else {
-      this.gameState.canWhiteCastleKingside = false;
-      this.gameState.canWhiteCastleQueenside = false;
-    }
-  }
-
-  getValidMoves() {
-    const squares = [];
-
-    // normal moves
-    for (let i = -1; i < 2; i++) {
-      for (let j = -1; j < 2; j++) {
-        if (i === 0 && j === 0) {
-          continue;
-        }
-        squares.push({ x: this.x + i, y: this.y + j });
+  // normal moves
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
+      if (i === 0 && j === 0) {
+        continue;
       }
+      squares.push({ x: square.x + i, y: square.y + j });
     }
-
-    // castles
-    if (this.gameState.canWhiteCastleQueenside) {
-      squares.push({ x: this.x - 2, y: this.y });
-    }
-    if (this.gameState.canWhiteCastleKingside) {
-      squares.push({ x: this.x + 2, y: this.y });
-    }
-
-    return squares.filter(isInside).filter((square) => {
-      const isOccupied = this.ownPieces.some(
-        (piece) => piece.x === square.x && piece.y === square.y
-      );
-
-      if (isOccupied) {
-        return false;
-      }
-
-      return true;
-    });
   }
+
+  // castles
+  if (
+    color === "w"
+      ? gameState.canWhiteCastleQueenside
+      : gameState.canBlackCastleQueenside
+  ) {
+    squares.push({ x: square.x - 2, y: square.y });
+  }
+  if (
+    color === "w"
+      ? gameState.canWhiteCastleKingside
+      : gameState.canBlackCastleKingside
+  ) {
+    squares.push({ x: square.x + 2, y: square.y });
+  }
+
+  return squares
+    .filter(isInside)
+    .filter((square) => !isOwnOccupied(gameState, square, color));
 }

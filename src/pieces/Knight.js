@@ -1,44 +1,18 @@
-import { isInside } from "../utils";
-import Piece from "./Piece";
-import knight from "../images/knight.svg?raw";
+import { isInside, isOwnOccupied } from "../utils";
 
-export default class Knight extends Piece {
-  type = "knight";
+export default function getValidKnightMoves(gameState, square, color) {
+  const squares = [
+    { x: square.x + 1, y: square.y + 2 },
+    { x: square.x + 2, y: square.y + 1 },
+    { x: square.x - 1, y: square.y + 2 },
+    { x: square.x - 2, y: square.y + 1 },
+    { x: square.x + 1, y: square.y - 2 },
+    { x: square.x + 2, y: square.y - 1 },
+    { x: square.x - 1, y: square.y - 2 },
+    { x: square.x - 2, y: square.y - 1 },
+  ];
 
-  constructor(props) {
-    super(props);
-
-    this.element.innerHTML = knight;
-  }
-
-  clone(props) {
-    return new Knight(props);
-  }
-
-  getValidMoves = () => {
-    const squares = [
-      { x: this.x + 1, y: this.y + 2 },
-      { x: this.x + 2, y: this.y + 1 },
-      { x: this.x - 1, y: this.y + 2 },
-      { x: this.x - 2, y: this.y + 1 },
-      { x: this.x + 1, y: this.y - 2 },
-      { x: this.x + 2, y: this.y - 1 },
-      { x: this.x - 1, y: this.y - 2 },
-      { x: this.x - 2, y: this.y - 1 },
-    ];
-
-    return squares
-      .filter((square) => isInside(square))
-      .filter((square) => {
-        const isOccupied = this.ownPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        );
-
-        if (isOccupied) {
-          return false;
-        }
-
-        return true;
-      });
-  };
+  return squares
+    .filter((square) => isInside(square))
+    .filter((square) => !isOwnOccupied(gameState, square, color));
 }

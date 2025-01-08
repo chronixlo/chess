@@ -1,6 +1,7 @@
 import { BOARD_SIZE, PIECE_VALUES } from "./consts";
 import gameState from "./gameState";
 import "./style.css";
+import { getValidMovesNoCheck } from "./utils";
 
 for (let y = 0; y < BOARD_SIZE; y++) {
   const row = document.createElement("div");
@@ -13,28 +14,30 @@ for (let y = 0; y < BOARD_SIZE; y++) {
   }
 }
 
-let selectedTile = null;
+let selectedSquare = null;
+let selectedSquareElement = null;
 let selectedPiece = null;
 
 let validMoveTiles = [];
 
-const onPieceClick = (piece) => {
-  if (selectedTile) {
-    selectedTile.classList.remove("selected");
+const onPieceClick = (square, piece) => {
+  if (selectedSquareElement) {
+    selectedSquareElement.classList.remove("selected");
   }
   if (validMoveTiles.length) {
     validMoveTiles.forEach((tile) => tile.classList.remove("valid-move"));
   }
   validMoveTiles = [];
-  selectedTile = gameState.cellsElement.querySelector(
-    `.cell-${piece.x}-${piece.y}`
+  selectedSquareElement = gameState.cellsElement.querySelector(
+    `.cell-${square.x}-${square.y}`
   );
-  selectedTile.classList.add("selected");
+  selectedSquareElement.classList.add("selected");
 
+  selectedSquare = square;
   selectedPiece = piece;
 
   // show valid moves
-  const validMoves = piece.getValidMovesNoCheck();
+  const validMoves = getValidMovesNoCheck(gameState, square, piece);
 
   validMoves.forEach((tile) => {
     const validMoveTile = gameState.cellsElement.querySelector(
@@ -51,15 +54,10 @@ const onBoardClick = (e) => {
     y: Math.floor(e.offsetY / 50),
   };
 
-  const ownPieces =
-    gameState.turn === 0 ? gameState.whitePieces : gameState.blackPieces;
+  const clickedPiece = gameState.board[clickedSquare.y][clickedSquare.x];
 
-  const clickedPiece = ownPieces.find(
-    (piece) => piece.x === clickedSquare.x && piece.y === clickedSquare.y
-  );
-
-  if (clickedPiece) {
-    onPieceClick(clickedPiece);
+  if (clickedPiece?.[0] === (gameState.turn === 0 ? "w" : "b")) {
+    onPieceClick(clickedSquare, clickedPiece);
     return;
   }
 
@@ -67,7 +65,11 @@ const onBoardClick = (e) => {
     return;
   }
 
-  const validMoves = selectedPiece.getValidMovesNoCheck();
+  const validMoves = getValidMovesNoCheck(
+    gameState,
+    selectedSquare,
+    selectedPiece
+  );
 
   if (
     !validMoves.some(
@@ -81,11 +83,12 @@ const onBoardClick = (e) => {
     validMoveTiles.forEach((tile) => tile.classList.remove("valid-move"));
   }
 
-  selectedPiece.move(clickedSquare);
+  gameState.move(selectedSquare, clickedSquare);
 
   selectedPiece = null;
-  selectedTile.classList.remove("selected");
-  selectedTile = null;
+  selectedSquare = null;
+  selectedSquareElement.classList.remove("selected");
+  selectedSquareElement = null;
 
   gameState.endTurn();
 

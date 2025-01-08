@@ -1,142 +1,84 @@
 import { BOARD_SIZE } from "../consts";
-import { isInside } from "../utils";
-import Piece from "./Piece";
-import bishop from "../images/bishop.svg?raw";
+import { isInside, isOccupied, isOwnOccupied } from "../utils";
 
-export default class Bishop extends Piece {
-  type = "bishop";
+export default function getValidBishopMoves(gameState, square, color) {
+  const squares = [];
 
-  constructor(props) {
-    super(props);
+  // -x
+  for (let i = 1; i < BOARD_SIZE; i++) {
+    const newSquare = { x: square.x - i, y: square.y - i };
 
-    this.element.innerHTML = bishop;
+    if (!isInside(newSquare)) {
+      break;
+    }
+
+    if (isOwnOccupied(gameState, newSquare, color)) {
+      break;
+    }
+
+    squares.push(newSquare);
+
+    if (isOccupied(gameState, newSquare, color)) {
+      break;
+    }
   }
 
-  clone(props) {
-    return new Bishop(props);
+  // -y
+  for (let i = 1; i < BOARD_SIZE; i++) {
+    const newSquare = { x: square.x + i, y: square.y - i };
+
+    if (!isInside(newSquare)) {
+      break;
+    }
+
+    if (isOwnOccupied(gameState, newSquare, color)) {
+      break;
+    }
+
+    squares.push(newSquare);
+
+    if (isOccupied(gameState, newSquare, color)) {
+      break;
+    }
   }
 
-  getValidMoves() {
-    const squares = [];
+  // +x
+  for (let i = 1; i < BOARD_SIZE; i++) {
+    const newSquare = { x: square.x + i, y: square.y + i };
 
-    // -x
-    for (let i = 1; i < BOARD_SIZE; i++) {
-      const square = { x: this.x - i, y: this.y - i };
-
-      if (!isInside(square)) {
-        break;
-      }
-
-      if (
-        this.ownPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
-
-      squares.push(square);
-
-      if (
-        this.enemyPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
+    if (!isInside(newSquare)) {
+      break;
     }
 
-    // -y
-    for (let i = 1; i < BOARD_SIZE; i++) {
-      const square = { x: this.x + i, y: this.y - i };
-
-      if (!isInside(square)) {
-        break;
-      }
-
-      if (
-        this.ownPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
-
-      squares.push(square);
-
-      if (
-        this.enemyPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
+    if (isOwnOccupied(gameState, newSquare, color)) {
+      break;
     }
 
-    // +x
-    for (let i = 1; i < BOARD_SIZE; i++) {
-      const square = { x: this.x + i, y: this.y + i };
+    squares.push(newSquare);
 
-      if (!isInside(square)) {
-        break;
-      }
-
-      if (
-        this.ownPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
-
-      squares.push(square);
-
-      if (
-        this.enemyPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
+    if (isOccupied(gameState, newSquare, color)) {
+      break;
     }
-
-    // +y
-    for (let i = 1; i < BOARD_SIZE; i++) {
-      const square = { x: this.x - i, y: this.y + i };
-
-      if (!isInside(square)) {
-        break;
-      }
-
-      if (
-        this.ownPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
-
-      squares.push(square);
-
-      if (
-        this.enemyPieces.some(
-          (piece) => piece.x === square.x && piece.y === square.y
-        )
-      ) {
-        break;
-      }
-    }
-
-    return squares.filter((square) => {
-      const isOccupied = this.ownPieces.some(
-        (piece) => piece.x === square.x && piece.y === square.y
-      );
-
-      if (isOccupied) {
-        return false;
-      }
-
-      return true;
-    });
   }
+
+  // +y
+  for (let i = 1; i < BOARD_SIZE; i++) {
+    const newSquare = { x: square.x - i, y: square.y + i };
+
+    if (!isInside(newSquare)) {
+      break;
+    }
+
+    if (isOwnOccupied(gameState, newSquare, color)) {
+      break;
+    }
+
+    squares.push(newSquare);
+
+    if (isOccupied(gameState, newSquare, color)) {
+      break;
+    }
+  }
+
+  return squares;
 }
