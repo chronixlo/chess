@@ -38,6 +38,22 @@ export default function getValidPawnMoves(gameState, square, color) {
     ...possibleCaptures.filter(isInside).filter((square) => {
       const occupyingPiece = gameState.board[square.y][square.x];
 
+      if (
+        color === "w" &&
+        gameState.blackEnPassant?.x === square.x &&
+        gameState.blackEnPassant?.y === square.y
+      ) {
+        return true;
+      }
+
+      if (
+        color === "b" &&
+        gameState.whiteEnPassant?.x === square.x &&
+        gameState.whiteEnPassant?.y === square.y
+      ) {
+        return true;
+      }
+
       if (occupyingPiece?.[0] === undefined || occupyingPiece[0] === color) {
         return false;
       }

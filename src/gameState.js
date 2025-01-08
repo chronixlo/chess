@@ -22,6 +22,9 @@ export class Game {
   whiteChecked = false;
   blackChecked = false;
 
+  whiteEnPassant = null;
+  blackEnPassant = null;
+
   clickLayer = null;
   piecesElement = null;
   cellsElement = null;
@@ -218,6 +221,33 @@ export class Game {
     this.board[toSquare.y][toSquare.x] = this.board[fromSquare.y][fromSquare.x];
     this.board[fromSquare.y][fromSquare.x] = "";
 
+    const deltaY = toSquare.y - fromSquare.y;
+
+    // en passant capture
+    if (
+      movingPiece === "wp" &&
+      toSquare.x === this.blackEnPassant?.x &&
+      toSquare.y === this.blackEnPassant?.y
+    ) {
+      this.board[this.blackEnPassant.y + 1][this.blackEnPassant.x] = "";
+    } else if (
+      movingPiece === "bp" &&
+      toSquare.x === this.whiteEnPassant?.x &&
+      toSquare.y === this.whiteEnPassant?.y
+    ) {
+      this.board[this.whiteEnPassant.y - 1][this.whiteEnPassant.x] = "";
+    }
+
+    this.blackEnPassant = null;
+    this.whiteEnPassant = null;
+
+    // allow en passant
+    if (movingPiece === "wp" && deltaY === -2 && toSquare.y === 4) {
+      this.whiteEnPassant = { x: toSquare.x, y: toSquare.y + 1 };
+    } else if (movingPiece === "bp" && deltaY === 2 && toSquare.y === 3) {
+      this.blackEnPassant = { x: toSquare.x, y: toSquare.y - 1 };
+    }
+
     // promotion
     if (movingPiece === "wp" && toSquare.y === 0) {
       this.board[toSquare.y][toSquare.x] = "wq";
@@ -292,7 +322,7 @@ export default new Game({
 bp,bp,bp,bp,bp,bp,bp,bp
 ,,,,,,,
 ,,,,,,,
-,,,,,,,
+,,bp,,,,,
 ,,,,,,,
 wp,wp,wp,wp,wp,wp,wp,wp
 wr,wn,wb,wq,wk,wb,wn,wr`,
