@@ -32,7 +32,8 @@ export default function getValidKingMoves(gameState, square, color) {
     gameState.board[square.y][square.x - 3] === ""
   ) {
     squares.push({ x: square.x - 2, y: square.y });
-  } else if (
+  }
+  if (
     color === "w" &&
     gameState.canWhiteCastleKingside &&
     !gameState.whiteChecked &&
