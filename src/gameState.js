@@ -33,7 +33,7 @@ export class Game {
 
     this.sim = props.sim;
     this.board = props.board.split("\n").map((r) => r.split(","));
-    this.turn = props.turn;
+    this.turn = props.turn ?? 0;
 
     this.canWhiteCastleQueenside = props.canWhiteCastleQueenside ?? true;
     this.canWhiteCastleKingside = props.canWhiteCastleKingside ?? true;
@@ -327,13 +327,12 @@ export class Game {
 export default new Game({
   board: `br,bn,bb,bq,bk,bb,bn,br
 bp,bp,bp,bp,bp,bp,bp,bp
+,,bn,,,,,
 ,,,,,,,
 ,,,,,,,
-,,,,,,,
-,,,,,,,
+,,,,wp,,,
 wp,wp,wp,wp,wp,wp,wp,wp
 wr,wn,wb,wq,wk,wb,wn,wr`,
-  turn: 0,
 });
 
 `br,bn,bb,bq,bk,bb,bn,br
