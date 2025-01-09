@@ -22,6 +22,7 @@ export class Game {
   cellsElement = null;
   statusText = null;
   gameMode = "cpu";
+  // gameMode = "cvc";
   // gameMode = "1v1";
 
   sim = false;
@@ -32,7 +33,7 @@ export class Game {
     this.cellsElement = document.querySelector("#cells");
     this.statusText = document.querySelector("#status-text");
 
-    this.sim = props.sim;
+    this.sim = props.sim ?? false;
     this.board = props.board.split("\n").map((r) => r.split(","));
     this.turn = props.turn ?? 0;
 
@@ -50,9 +51,15 @@ export class Game {
 
   init() {
     if (!this.sim) {
-      this.setStatusText("White to move");
+      this.updateStatus();
 
       this.render();
+
+      if (this.gameMode === "cvc") {
+        setTimeout(() => {
+          doCpuMove(this, this.turn === 0 ? "w" : "b", 2);
+        }, 100);
+      }
     }
   }
 
@@ -283,19 +290,23 @@ export class Game {
     this.turn = 1 - this.turn;
 
     if (!this.sim) {
-      this.setStatusText((this.turn === 0 ? "White" : "Black") + " to move");
+      this.updateStatus();
       this.render();
     }
 
     this.updateChecked();
 
     if (!this.sim) {
-      console.log(this);
+      // console.log(this);
     }
 
-    if (this.turn === 1 && !this.sim && this.gameMode === "cpu") {
-      doCpuMove(this, "b", 2);
-    }
+    setTimeout(() => {
+      if (this.turn === 1 && !this.sim && this.gameMode === "cpu") {
+        doCpuMove(this, "b", 2);
+      } else if (!this.sim && this.gameMode === "cvc") {
+        doCpuMove(this, this.turn === 0 ? "w" : "b", 2);
+      }
+    }, 100);
   }
 
   render() {
@@ -315,7 +326,20 @@ export class Game {
     });
   }
 
-  setStatusText(text) {
+  updateStatus() {
+    let text;
+
+    if (this.gameMode === "1v1") {
+      text = (this.turn === 0 ? "White" : "Black") + " to move";
+    } else if (this.gameMode === "cpu") {
+      text = this.turn === 0 ? "White to move" : "Thinking...";
+    } else {
+      text = "Thinking...";
+    }
+
+    this.statusText.style.transform = `translateY(${
+      this.turn === 0 ? "180px" : "-180px"
+    }`;
     this.statusText.textContent = text;
   }
 

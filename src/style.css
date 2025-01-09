@@ -22,13 +22,16 @@ body {
 }
 
 #sidebar {
+  width: 200px;
+  text-align: center;
+  font-size: 20px;
+}
+
+#status-text {
   padding: 10px;
   background: #666;
   border-radius: 8px;
   color: #222;
-  width: 200px;
-  text-align: center;
-  font-size: 20px;
 }
 
 #board-outer {
