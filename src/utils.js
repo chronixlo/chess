@@ -86,3 +86,7 @@ export function getValidMoves(gameState, square, piece, noCastles) {
 
   return [];
 }
+
+export function getIsOnTheEdge(x, y) {
+  return x === 0 || x === BOARD_SIZE - 1 || y === 0 || y === BOARD_SIZE - 1;
+}

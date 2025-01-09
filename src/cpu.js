@@ -1,6 +1,6 @@
 import { BOARD_SIZE, PIECE_VALUES } from "./consts";
 import Game from "./Game";
-import { getValidMovesNoCheck } from "./utils";
+import { getIsOnTheEdge, getValidMovesNoCheck } from "./utils";
 
 export function doCpuMove(gameState, color, depth) {
   const evaluation = getEvaluation(gameState);
@@ -15,8 +15,7 @@ export function doCpuMove(gameState, color, depth) {
 
       if (piece?.[0] === color) {
         const pieceType = piece[1];
-        const isOnTheEdge =
-          x === 0 || x === BOARD_SIZE - 1 || y === 0 || y === BOARD_SIZE - 1;
+        const isOnTheEdge = getIsOnTheEdge(x, y);
 
         const squares = getValidMovesNoCheck(
           gameState,
@@ -28,6 +27,8 @@ export function doCpuMove(gameState, color, depth) {
         );
 
         for (let square of squares) {
+          const willBeOnTheEdge = getIsOnTheEdge(square.x, square.y);
+
           //   console.count("calcs");
           let value = Math.random() * 0.2 - 0.1;
 
@@ -64,11 +65,17 @@ export function doCpuMove(gameState, color, depth) {
             if (isOnTheEdge) {
               value += 0.5;
             }
+            if (willBeOnTheEdge) {
+              value -= 0.2;
+            }
           }
           // centralize bishops
           else if (pieceType === "b") {
             if (isOnTheEdge) {
               value += 0.5;
+            }
+            if (willBeOnTheEdge) {
+              value -= 0.2;
             }
           }
 
