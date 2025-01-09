@@ -94,7 +94,7 @@ const onBoardClick = (e) => {
   gameState.endTurn();
 
   if (gameState.gameMode === "cpu") {
-    doCpuMove(gameState);
+    doCpuMove(gameState, "b");
   }
 };
 

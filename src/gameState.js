@@ -325,13 +325,13 @@ export class Game {
 }
 
 export default new Game({
-  board: `br,bn,bb,bq,bk,bb,bn,br
+  board: `br,,bb,bq,bk,bb,bn,br
 bp,bp,bp,bp,bp,bp,bp,bp
 ,,bn,,,,,
 ,,,,,,,
 ,,,,,,,
 ,,,,wp,,,
-wp,wp,wp,wp,wp,wp,wp,wp
+wp,wp,wp,wp,,wp,wp,wp
 wr,wn,wb,wq,wk,wb,wn,wr`,
 });
 
