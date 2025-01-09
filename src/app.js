@@ -48,6 +48,16 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
     this.updateStatus();
     this.render();
 
+    this.cellsElement
+      .querySelector(".last-move-from")
+      ?.classList.remove("last-move-from");
+    this.cellsElement
+      .querySelector(".last-move-to")
+      ?.classList.remove("last-move-to");
+    this.cellsElement
+      .querySelectorAll(".check")
+      .forEach((tile) => tile.classList.remove("check"));
+
     if (this.gameMode === "cvc") {
       setTimeout(() => {
         doCpuMove(this.gameState, this.gameState.turn === 0 ? "w" : "b", 2);
