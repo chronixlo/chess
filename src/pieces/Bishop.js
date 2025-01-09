@@ -1,84 +1,31 @@
 import { BOARD_SIZE } from "../consts";
-import { isInside, isOccupied, isOwnOccupied } from "../utils";
+import { getMovesByDeltas } from "../utils";
 
 export default function getValidBishopMoves(gameState, square, color) {
-  const squares = [];
-
-  // -x
-  for (let i = 1; i < BOARD_SIZE; i++) {
-    const newSquare = { x: square.x - i, y: square.y - i };
-
-    if (!isInside(newSquare)) {
-      break;
-    }
-
-    if (isOwnOccupied(gameState, newSquare, color)) {
-      break;
-    }
-
-    squares.push(newSquare);
-
-    if (isOccupied(gameState, newSquare, color)) {
-      break;
-    }
-  }
-
-  // -y
-  for (let i = 1; i < BOARD_SIZE; i++) {
-    const newSquare = { x: square.x + i, y: square.y - i };
-
-    if (!isInside(newSquare)) {
-      break;
-    }
-
-    if (isOwnOccupied(gameState, newSquare, color)) {
-      break;
-    }
-
-    squares.push(newSquare);
-
-    if (isOccupied(gameState, newSquare, color)) {
-      break;
-    }
-  }
-
-  // +x
-  for (let i = 1; i < BOARD_SIZE; i++) {
-    const newSquare = { x: square.x + i, y: square.y + i };
-
-    if (!isInside(newSquare)) {
-      break;
-    }
-
-    if (isOwnOccupied(gameState, newSquare, color)) {
-      break;
-    }
-
-    squares.push(newSquare);
-
-    if (isOccupied(gameState, newSquare, color)) {
-      break;
-    }
-  }
-
-  // +y
-  for (let i = 1; i < BOARD_SIZE; i++) {
-    const newSquare = { x: square.x - i, y: square.y + i };
-
-    if (!isInside(newSquare)) {
-      break;
-    }
-
-    if (isOwnOccupied(gameState, newSquare, color)) {
-      break;
-    }
-
-    squares.push(newSquare);
-
-    if (isOccupied(gameState, newSquare, color)) {
-      break;
-    }
-  }
-
-  return squares;
+  return [
+    ...getMovesByDeltas(
+      gameState,
+      square,
+      color,
+      new Array(BOARD_SIZE).fill(null).map((_, idx) => ({ x: -idx, y: -idx }))
+    ),
+    ...getMovesByDeltas(
+      gameState,
+      square,
+      color,
+      new Array(BOARD_SIZE).fill(null).map((_, idx) => ({ x: +idx, y: -idx }))
+    ),
+    ...getMovesByDeltas(
+      gameState,
+      square,
+      color,
+      new Array(BOARD_SIZE).fill(null).map((_, idx) => ({ x: -idx, y: +idx }))
+    ),
+    ...getMovesByDeltas(
+      gameState,
+      square,
+      color,
+      new Array(BOARD_SIZE).fill(null).map((_, idx) => ({ x: +idx, y: +idx }))
+    ),
+  ];
 }

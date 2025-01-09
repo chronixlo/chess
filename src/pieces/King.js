@@ -24,34 +24,7 @@ export default function getValidKingMoves(gameState, square, color, noCastles) {
     gameState.board[square.y][square.x - 2] === "" &&
     gameState.board[square.y][square.x - 3] === ""
   ) {
-    // check if square being stepped over is safe
-    let isSafe = true;
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        const piece = gameState.board[y][x];
-        if (piece?.[0] === "b") {
-          const squares = getValidMoves(
-            gameState,
-            {
-              x,
-              y,
-            },
-            gameState.board[y][x],
-            true
-          );
-          if (
-            squares.some((sq) => sq.x === square.x - 1 && sq.y === square.y)
-          ) {
-            isSafe = false;
-            break outer;
-          }
-        }
-      }
-    }
-
-    if (isSafe) {
-      squares.push({ x: square.x - 2, y: square.y });
-    }
+    squares.push(...getCastleSquares(gameState, square, "b", "q"));
   } else if (
     !noCastles &&
     color === "b" &&
@@ -61,35 +34,7 @@ export default function getValidKingMoves(gameState, square, color, noCastles) {
     gameState.board[square.y][square.x - 2] === "" &&
     gameState.board[square.y][square.x - 3] === ""
   ) {
-    // check if square being stepped over is safe
-    let isSafe = true;
-
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        const piece = gameState.board[y][x];
-        if (piece?.[0] === "w") {
-          const squares = getValidMoves(
-            gameState,
-            {
-              x,
-              y,
-            },
-            piece,
-            true
-          );
-          if (
-            squares.some((sq) => sq.x === square.x - 1 && sq.y === square.y)
-          ) {
-            isSafe = false;
-            break outer;
-          }
-        }
-      }
-    }
-
-    if (isSafe) {
-      squares.push({ x: square.x - 2, y: square.y });
-    }
+    squares.push(...getCastleSquares(gameState, square, "w", "q"));
   }
   if (
     !noCastles &&
@@ -99,34 +44,7 @@ export default function getValidKingMoves(gameState, square, color, noCastles) {
     gameState.board[square.y][square.x + 1] === "" &&
     gameState.board[square.y][square.x + 2] === ""
   ) {
-    // check if square being stepped over is safe
-    let isSafe = true;
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        const piece = gameState.board[y][x];
-        if (piece?.[0] === "b") {
-          const squares = getValidMoves(
-            gameState,
-            {
-              x,
-              y,
-            },
-            gameState.board[y][x],
-            true
-          );
-          if (
-            squares.some((sq) => sq.x === square.x + 1 && sq.y === square.y)
-          ) {
-            isSafe = false;
-            break outer;
-          }
-        }
-      }
-    }
-
-    if (isSafe) {
-      squares.push({ x: square.x + 2, y: square.y });
-    }
+    squares.push(...getCastleSquares(gameState, square, "b", "k"));
   } else if (
     !noCastles &&
     color === "b" &&
@@ -135,37 +53,48 @@ export default function getValidKingMoves(gameState, square, color, noCastles) {
     gameState.board[square.y][square.x + 1] === "" &&
     gameState.board[square.y][square.x + 2] === ""
   ) {
-    // check if square being stepped over is safe
-    let isSafe = true;
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        const piece = gameState.board[y][x];
-        if (piece?.[0] === "w") {
-          const squares = getValidMoves(
-            gameState,
-            {
-              x,
-              y,
-            },
-            gameState.board[y][x],
-            true
-          );
-          if (
-            squares.some((sq) => sq.x === square.x + 1 && sq.y === square.y)
-          ) {
-            isSafe = false;
-            break outer;
-          }
-        }
-      }
-    }
-
-    if (isSafe) {
-      squares.push({ x: square.x + 2, y: square.y });
-    }
+    squares.push(...getCastleSquares(gameState, square, "w", "k"));
   }
 
   return squares
     .filter(isInside)
     .filter((square) => !isOwnOccupied(gameState, square, color));
+}
+
+function getCastleSquares(gameState, square, enemyColor, side) {
+  const checkCheckOffset = side === "q" ? -1 : 1;
+  const moveOffset = side === "q" ? -2 : 2;
+
+  // check if square being stepped over is safe
+  let isSafe = true;
+  outer: for (let y = 0; y < BOARD_SIZE; y++) {
+    for (let x = 0; x < BOARD_SIZE; x++) {
+      const piece = gameState.board[y][x];
+      if (piece?.[0] === enemyColor) {
+        const squares = getValidMoves(
+          gameState,
+          {
+            x,
+            y,
+          },
+          gameState.board[y][x],
+          true
+        );
+        if (
+          squares.some(
+            (sq) => sq.x === square.x + checkCheckOffset && sq.y === square.y
+          )
+        ) {
+          isSafe = false;
+          break outer;
+        }
+      }
+    }
+  }
+
+  if (isSafe) {
+    return [{ x: square.x + moveOffset, y: square.y }];
+  }
+
+  return [];
 }

@@ -4,6 +4,9 @@ import { getValidMoves } from "./utils";
 export default class Game {
   turn = 0;
 
+  // 'w' | 'b' | 'draw'
+  result = null;
+
   canWhiteCastleQueenside = true;
   canWhiteCastleKingside = true;
 
@@ -24,12 +27,10 @@ export default class Game {
   // gameMode = "cvc";
   // gameMode = "1v1";
 
-  sim = false;
-
   onEndTurn = null;
+  onMove = null;
 
   constructor(props) {
-    this.sim = props.sim ?? false;
     this.board = props.board.split("\n").map((r) => r.split(","));
     this.turn = props.turn ?? 0;
 

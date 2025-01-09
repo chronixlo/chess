@@ -90,3 +90,34 @@ export function getValidMoves(gameState, square, piece, noCastles) {
 export function getIsOnTheEdge(x, y) {
   return x === 0 || x === BOARD_SIZE - 1 || y === 0 || y === BOARD_SIZE - 1;
 }
+
+/** for bishop/rook(/queen) only */
+export function getMovesByDeltas(gameState, square, color, deltas) {
+  const squares = [];
+
+  for (let delta of deltas) {
+    if (!delta.x && !delta.y) {
+      continue;
+    }
+
+    const newSquare = {
+      x: square.x + (delta.x || 0),
+      y: square.y + (delta.y || 0),
+    };
+
+    if (!isInside(newSquare)) {
+      break;
+    }
+
+    if (isOwnOccupied(gameState, newSquare, color)) {
+      break;
+    }
+
+    squares.push(newSquare);
+
+    if (isOccupied(gameState, newSquare, color)) {
+      break;
+    }
+  }
+  return squares;
+}
