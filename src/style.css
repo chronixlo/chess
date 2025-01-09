@@ -9,10 +9,7 @@ body {
   font-family: monospace;
   --dark-square: #444;
   --light-square: #aaa;
-}
 
-html,
-body {
   height: 100%;
   width: 100%;
   display: flex;
@@ -21,10 +18,48 @@ body {
   gap: 16px;
 }
 
+@media (max-width: 800px) {
+  body {
+    flex-direction: column;
+  }
+}
+
+html {
+  height: 100%;
+}
+
 #sidebar {
-  width: 200px;
   text-align: center;
   font-size: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 800px) {
+  #sidebar {
+    width: 200px;
+  }
+}
+
+#modes {
+  display: flex;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+#modes > button {
+  font-size: 20px;
+  border: none;
+  padding: 8px;
+  background: #ccc;
+  font-family: inherit;
+  flex: 1;
+}
+
+#modes > button.selected {
+  background: #aaa;
+  box-shadow: inset 2px 2px 12px #333a;
 }
 
 #status-text {

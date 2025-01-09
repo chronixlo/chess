@@ -1,5 +1,5 @@
 import { BOARD_SIZE } from "./consts";
-import { Game } from "./gameState";
+import Game from "./Game";
 import getValidBishopMoves from "./pieces/bishop";
 import getValidKingMoves from "./pieces/king";
 import getValidKnightMoves from "./pieces/knight";
@@ -44,6 +44,8 @@ export function getValidMovesNoCheck(gameState, square, piece) {
       ...gameState,
       board: gameState.getBoardString(),
       sim: true,
+      onEndTurn: null,
+      onMove: null,
     });
     newGameState.move(square, newSquare);
     newGameState.endTurn();

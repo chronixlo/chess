@@ -1,5 +1,5 @@
 import { BOARD_SIZE, PIECE_VALUES } from "./consts";
-import { Game } from "./gameState";
+import Game from "./Game";
 import { getValidMovesNoCheck } from "./utils";
 
 export function doCpuMove(gameState, color, depth) {
@@ -35,6 +35,8 @@ export function doCpuMove(gameState, color, depth) {
             ...gameState,
             board: gameState.getBoardString(),
             sim: true,
+            onEndTurn: null,
+            onMove: null,
           });
           newGameState.move({ x, y }, square);
           newGameState.endTurn();

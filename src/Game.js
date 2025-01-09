@@ -1,8 +1,7 @@
-import { BOARD_SIZE, PIECE_CHARACTERS } from "./consts";
-import { doCpuMove } from "./cpu";
+import { BOARD_SIZE } from "./consts";
 import { getValidMoves } from "./utils";
 
-export class Game {
+export default class Game {
   turn = 0;
 
   canWhiteCastleQueenside = true;
@@ -27,12 +26,9 @@ export class Game {
 
   sim = false;
 
-  constructor(props) {
-    this.clickLayer = document.querySelector("#click-layer");
-    this.piecesElement = document.querySelector("#pieces");
-    this.cellsElement = document.querySelector("#cells");
-    this.statusText = document.querySelector("#status-text");
+  onEndTurn = null;
 
+  constructor(props) {
     this.sim = props.sim ?? false;
     this.board = props.board.split("\n").map((r) => r.split(","));
     this.turn = props.turn ?? 0;
@@ -46,32 +42,13 @@ export class Game {
     this.whiteEnPassant = props.whiteEnPassant;
     this.blackEnPassant = props.blackEnPassant;
 
-    this.init();
-  }
-
-  init() {
-    if (!this.sim) {
-      this.updateStatus();
-
-      this.render();
-
-      if (this.gameMode === "cvc") {
-        setTimeout(() => {
-          doCpuMove(this, this.turn === 0 ? "w" : "b", 2);
-        }, 100);
-      }
-    }
+    this.onEndTurn = props.onEndTurn;
+    this.onMove = props.onMove;
   }
 
   updateChecked() {
     this.blackChecked = false;
     this.whiteChecked = false;
-
-    if (!this.sim) {
-      this.cellsElement
-        .querySelectorAll(".check")
-        .forEach((tile) => tile.classList.remove("check"));
-    }
 
     let blackKing;
 
@@ -109,13 +86,6 @@ export class Game {
           }
         }
       }
-    }
-
-    if (!this.sim && this.blackChecked) {
-      const blackKingSquare = this.cellsElement.querySelector(
-        `.cell-${blackKing.x}-${blackKing.y}`
-      );
-      blackKingSquare.classList.add("check");
     }
 
     //
@@ -156,13 +126,6 @@ export class Game {
           }
         }
       }
-    }
-
-    if (!this.sim && this.whiteChecked) {
-      const whiteKingSquare = this.cellsElement.querySelector(
-        `.cell-${whiteKing.x}-${whiteKing.y}`
-      );
-      whiteKingSquare.classList.add("check");
     }
   }
 
@@ -266,109 +229,22 @@ export class Game {
       this.board[toSquare.y][toSquare.x] = "bq";
     }
 
-    if (!this.sim) {
-      this.cellsElement
-        .querySelector(".last-move-from")
-        ?.classList.remove("last-move-from");
-      this.cellsElement
-        .querySelector(".last-move-to")
-        ?.classList.remove("last-move-to");
-
-      const fromSquareElement = this.cellsElement.querySelector(
-        `.cell-${fromSquare.x}-${fromSquare.y}`
-      );
-      fromSquareElement.classList.add("last-move-from");
-
-      const targetSquare = this.cellsElement.querySelector(
-        `.cell-${toSquare.x}-${toSquare.y}`
-      );
-      targetSquare.classList.add("last-move-to");
+    if (this.onMove) {
+      this.onMove(fromSquare, toSquare);
     }
   }
 
   endTurn() {
     this.turn = 1 - this.turn;
 
-    if (!this.sim) {
-      this.updateStatus();
-      this.render();
-    }
-
     this.updateChecked();
 
-    if (!this.sim) {
-      // console.log(this);
+    if (this.onEndTurn) {
+      this.onEndTurn();
     }
-
-    setTimeout(() => {
-      if (this.turn === 1 && !this.sim && this.gameMode === "cpu") {
-        doCpuMove(this, "b", 2);
-      } else if (!this.sim && this.gameMode === "cvc") {
-        doCpuMove(this, this.turn === 0 ? "w" : "b", 2);
-      }
-    }, 100);
-  }
-
-  render() {
-    this.piecesElement.innerHTML = "";
-
-    this.board.forEach((rank, y) => {
-      rank.forEach((square, x) => {
-        if (square !== "") {
-          const element = document.createElement("div");
-          element.classList.add("piece", square[0] === "w" ? "white" : "black");
-          element.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
-          element.textContent = PIECE_CHARACTERS[square[1]];
-
-          this.piecesElement.appendChild(element);
-        }
-      });
-    });
-  }
-
-  updateStatus() {
-    let text;
-
-    if (this.gameMode === "1v1") {
-      text = (this.turn === 0 ? "White" : "Black") + " to move";
-    } else if (this.gameMode === "cpu") {
-      text = this.turn === 0 ? "White to move" : "Thinking...";
-    } else {
-      text = "Thinking...";
-    }
-
-    this.statusText.style.transform = `translateY(${
-      this.turn === 0 ? "180px" : "-180px"
-    }`;
-    this.statusText.textContent = text;
-  }
-
-  setGameMode(mode) {
-    this.gameMode = mode;
-    this.init();
   }
 
   getBoardString() {
     return this.board.map((rank) => rank.join(",")).join("\n");
   }
 }
-
-export default new Game({
-  board: `br,bn,bb,bq,bk,bb,bn,br
-bp,bp,bp,bp,bp,bp,bp,bp
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-wp,wp,wp,wp,wp,wp,wp,wp
-wr,wn,wb,wq,wk,wb,wn,wr`,
-});
-
-`br,bn,bb,bq,bk,bb,bn,br
-bp,bp,bp,bp,bp,bp,bp,bp
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-wp,wp,wp,wp,wp,wp,wp,wp
-wr,wn,wb,wq,wk,wb,wn,wr`;

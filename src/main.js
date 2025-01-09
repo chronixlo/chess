@@ -1,12 +1,12 @@
 import { BOARD_SIZE } from "./consts";
-import gameState from "./gameState";
+import app from "./app";
 import "./style.css";
 import { getValidMovesNoCheck } from "./utils";
 
 for (let y = 0; y < BOARD_SIZE; y++) {
   const row = document.createElement("div");
   row.classList.add("row");
-  gameState.cellsElement.appendChild(row);
+  app.cellsElement.appendChild(row);
   for (let x = 0; x < BOARD_SIZE; x++) {
     const cell = document.createElement("div");
     cell.classList.add("cell", `cell-${x}-${y}`);
@@ -28,7 +28,7 @@ const onPieceClick = (square, piece) => {
     validMoveTiles.forEach((tile) => tile.classList.remove("valid-move"));
   }
   validMoveTiles = [];
-  selectedSquareElement = gameState.cellsElement.querySelector(
+  selectedSquareElement = app.cellsElement.querySelector(
     `.cell-${square.x}-${square.y}`
   );
   selectedSquareElement.classList.add("selected");
@@ -37,10 +37,10 @@ const onPieceClick = (square, piece) => {
   selectedPiece = piece;
 
   // show valid moves
-  const validMoves = getValidMovesNoCheck(gameState, square, piece);
+  const validMoves = getValidMovesNoCheck(app.gameState, square, piece);
 
   validMoves.forEach((tile) => {
-    const validMoveTile = gameState.cellsElement.querySelector(
+    const validMoveTile = app.cellsElement.querySelector(
       `.cell-${tile.x}-${tile.y}`
     );
     validMoveTile.classList.add("valid-move");
@@ -54,9 +54,9 @@ const onBoardClick = (e) => {
     y: Math.floor(e.offsetY / 50),
   };
 
-  const clickedPiece = gameState.board[clickedSquare.y][clickedSquare.x];
+  const clickedPiece = app.gameState.board[clickedSquare.y][clickedSquare.x];
 
-  if (clickedPiece?.[0] === (gameState.turn === 0 ? "w" : "b")) {
+  if (clickedPiece?.[0] === (app.gameState.turn === 0 ? "w" : "b")) {
     onPieceClick(clickedSquare, clickedPiece);
     return;
   }
@@ -66,7 +66,7 @@ const onBoardClick = (e) => {
   }
 
   const validMoves = getValidMovesNoCheck(
-    gameState,
+    app.gameState,
     selectedSquare,
     selectedPiece
   );
@@ -83,14 +83,14 @@ const onBoardClick = (e) => {
     validMoveTiles.forEach((tile) => tile.classList.remove("valid-move"));
   }
 
-  gameState.move(selectedSquare, clickedSquare);
+  app.gameState.move(selectedSquare, clickedSquare);
 
   selectedPiece = null;
   selectedSquare = null;
   selectedSquareElement.classList.remove("selected");
   selectedSquareElement = null;
 
-  gameState.endTurn();
+  app.gameState.endTurn();
 };
 
-gameState.clickLayer.addEventListener("click", onBoardClick);
+app.clickLayer.addEventListener("click", onBoardClick);
