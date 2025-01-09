@@ -1,5 +1,4 @@
 import { BOARD_SIZE } from "./consts";
-import { doCpuMove } from "./cpu";
 import gameState from "./gameState";
 import "./style.css";
 import { getValidMovesNoCheck } from "./utils";
@@ -92,10 +91,6 @@ const onBoardClick = (e) => {
   selectedSquareElement = null;
 
   gameState.endTurn();
-
-  if (gameState.gameMode === "cpu") {
-    doCpuMove(gameState, "b");
-  }
 };
 
 gameState.clickLayer.addEventListener("click", onBoardClick);

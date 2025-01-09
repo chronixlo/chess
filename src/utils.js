@@ -54,7 +54,7 @@ export function getValidMovesNoCheck(gameState, square, piece) {
   });
 }
 
-export function getValidMoves(gameState, square, piece) {
+export function getValidMoves(gameState, square, piece, noCastles) {
   const color = piece[0];
   const pieceType = piece[1];
 
@@ -75,7 +75,7 @@ export function getValidMoves(gameState, square, piece) {
   }
 
   if (pieceType === "k") {
-    return getValidKingMoves(gameState, square, color);
+    return getValidKingMoves(gameState, square, color, noCastles);
   }
 
   if (pieceType === "q") {

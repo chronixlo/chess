@@ -1,4 +1,5 @@
 import { BOARD_SIZE, PIECE_CHARACTERS } from "./consts";
+import { doCpuMove } from "./cpu";
 import { getValidMoves } from "./utils";
 
 export class Game {
@@ -245,9 +246,9 @@ export class Game {
     this.whiteEnPassant = null;
 
     // allow en passant
-    if (movingPiece === "wp" && deltaY === -2 && toSquare.y === 4) {
+    if (movingPiece === "wp" && deltaY === -2) {
       this.whiteEnPassant = { x: toSquare.x, y: toSquare.y + 1 };
-    } else if (movingPiece === "bp" && deltaY === 2 && toSquare.y === 3) {
+    } else if (movingPiece === "bp" && deltaY === 2) {
       this.blackEnPassant = { x: toSquare.x, y: toSquare.y - 1 };
     }
 
@@ -291,6 +292,10 @@ export class Game {
     if (!this.sim) {
       console.log(this);
     }
+
+    if (this.turn === 1 && !this.sim && this.gameMode === "cpu") {
+      doCpuMove(this, "b", 2);
+    }
   }
 
   render() {
@@ -325,13 +330,13 @@ export class Game {
 }
 
 export default new Game({
-  board: `br,,bb,bq,bk,bb,bn,br
+  board: `br,bn,bb,bq,bk,bb,bn,br
 bp,bp,bp,bp,bp,bp,bp,bp
-,,bn,,,,,
 ,,,,,,,
 ,,,,,,,
-,,,,wp,,,
-wp,wp,wp,wp,,wp,wp,wp
+,,,,,,,
+,,,,,,,
+wp,wp,wp,wp,wp,wp,wp,wp
 wr,wn,wb,wq,wk,wb,wn,wr`,
 });
 
