@@ -3,6 +3,7 @@ import Game from "./Game";
 import { getIsOnTheEdge, getValidMovesNoCheck } from "./utils";
 
 export function doCpuMove(gameState, color, depth) {
+  let count = 0;
   const evaluation = getEvaluation(gameState);
 
   const enemyColor = color === "b" ? "w" : "b";
@@ -39,6 +40,8 @@ export function doCpuMove(gameState, color, depth) {
           });
           newGameState.move({ x, y }, square);
           newGameState.endTurn();
+
+          count++;
 
           if (
             color === "w"
@@ -107,16 +110,13 @@ export function doCpuMove(gameState, color, depth) {
           }
 
           if (depth > 0) {
-            const bestContinuation = doCpuMove(
-              newGameState,
-              enemyColor,
-              depth - 1
-            );
-            if (bestContinuation) {
+            const calculations = doCpuMove(newGameState, enemyColor, depth - 1);
+            count += calculations.count;
+            if (calculations.bestMove) {
               value +=
                 color === "b"
-                  ? -bestContinuation.value
-                  : bestContinuation.value;
+                  ? -calculations.bestMove.value
+                  : calculations.bestMove.value;
             }
           }
 
@@ -136,7 +136,7 @@ export function doCpuMove(gameState, color, depth) {
     gameState.endTurn();
   }
 
-  return bestMove;
+  return { bestMove, count };
 }
 
 function getEvaluation(gameState) {

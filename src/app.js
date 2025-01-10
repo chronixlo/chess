@@ -1,8 +1,10 @@
 import { BOARD_SIZE, INITIAL_BOARD, PIECE_CHARACTERS } from "./consts";
 import { doCpuMove } from "./cpu";
 import Game from "./Game";
+import { toShort } from "./utils";
 
 const cpuDepth = 2;
+
 export class App {
   gameState = null;
 
@@ -17,6 +19,7 @@ export class App {
     this.piecesElement = document.querySelector("#pieces");
     this.cellsElement = document.querySelector("#cells");
     this.statusText = document.querySelector("#status-text");
+    this.calculationsText = document.querySelector("#calculations");
     this.moveText = document.querySelector("#move");
     this.oneOnOneButton = document.querySelector("#oneOnOne");
     this.cpuButton = document.querySelector("#cpu");
@@ -40,6 +43,7 @@ export class App {
 
     this.updateStatus();
     this.render();
+    this.calculationsText.innerHTML = "&nbsp;";
 
     this.cellsElement
       .querySelector(".last-move-from")
@@ -116,13 +120,15 @@ export class App {
   doCpuMove() {
     setTimeout(() => {
       const d = Date.now();
-      doCpuMove(
+      const { count } = doCpuMove(
         this.gameState,
         this.gameState.turn === 0 ? "w" : "b",
         cpuDepth
       );
 
-      console.log("moved in " + Math.round((Date.now() - d) / 1000) + "s");
+      this.calculationsText.textContent = `Evaluated ${toShort(
+        count
+      )} positions in ${Math.round((Date.now() - d) / 100) / 10}s`;
     }, 100);
   }
 

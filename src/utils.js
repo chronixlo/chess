@@ -123,3 +123,10 @@ export function getMovesByDeltas(gameState, square, color, deltas) {
 export function getBoardString(board) {
   return board.map((rank) => rank.join(",")).join("\n");
 }
+
+export function toShort(value) {
+  if (value > 10000) {
+    return Math.round(value / 100) / 10 + "k";
+  }
+  return value;
+}
