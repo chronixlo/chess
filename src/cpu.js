@@ -96,18 +96,12 @@ export function doCpuMove(gameState, color, depth) {
           }
           // centralize queens
           else if (pieceType === "q") {
-            if (isOnTheEdge) {
-              value += 0.2;
-            }
             if (willBeOnTheEdge) {
               value -= 0.2;
             }
           }
           // centralize rooks
           else if (pieceType === "r") {
-            if (isOnTheEdge) {
-              value += 0.2;
-            }
             if (willBeOnTheEdge) {
               value -= 0.2;
             }
