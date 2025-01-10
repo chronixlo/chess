@@ -18,6 +18,15 @@ export const PIECE_CHARACTERS = {
   n: "♞",
 };
 
+// const boardString = `,,,,,,,bk
+// ,,,,,,,
+// ,,,,,,,
+// ,,,,,,,
+// ,,,bq,,,,
+// ,,,,,,,
+// wp,,,,,,,
+// ,,,,wk,,,`;
+
 const boardString = `br,bn,bb,bq,bk,bb,bn,br
 bp,bp,bp,bp,bp,bp,bp,bp
 ,,,,,,,

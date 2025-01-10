@@ -107,7 +107,17 @@ export function doCpuMove(gameState, color, depth) {
           }
 
           if (depth > 0) {
-            doCpuMove(newGameState, enemyColor, depth - 1);
+            const bestContinuation = doCpuMove(
+              newGameState,
+              enemyColor,
+              depth - 1
+            );
+            if (bestContinuation) {
+              value +=
+                color === "b"
+                  ? -bestContinuation.value
+                  : bestContinuation.value;
+            }
           }
 
           const evaluationDelta = getEvaluation(newGameState) - evaluation;
@@ -123,9 +133,10 @@ export function doCpuMove(gameState, color, depth) {
 
   if (bestMove) {
     gameState.move(bestMove.fromSquare, bestMove.toSquare);
-
     gameState.endTurn();
   }
+
+  return bestMove;
 }
 
 function getEvaluation(gameState) {

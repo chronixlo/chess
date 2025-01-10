@@ -2,8 +2,7 @@ import { BOARD_SIZE, INITIAL_BOARD, PIECE_CHARACTERS } from "./consts";
 import { doCpuMove } from "./cpu";
 import Game from "./Game";
 
-const cpuDepth = 1;
-
+const cpuDepth = 2;
 export class App {
   gameState = null;
 
