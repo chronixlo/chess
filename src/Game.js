@@ -67,25 +67,27 @@ export default class Game {
       }
     }
 
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        if (this.board[y][x]?.[0] === "w") {
-          const moves = getValidMoves(
-            this,
-            {
-              x,
-              y,
-            },
-            this.board[y][x]
-          );
+    if (blackKing) {
+      outer: for (let y = 0; y < BOARD_SIZE; y++) {
+        for (let x = 0; x < BOARD_SIZE; x++) {
+          if (this.board[y][x]?.[0] === "w") {
+            const moves = getValidMoves(
+              this,
+              {
+                x,
+                y,
+              },
+              this.board[y][x]
+            );
 
-          if (
-            moves.some(
-              (square) => square.x === blackKing.x && square.y === blackKing.y
-            )
-          ) {
-            this.blackChecked = true;
-            break outer;
+            if (
+              moves.some(
+                (square) => square.x === blackKing.x && square.y === blackKing.y
+              )
+            ) {
+              this.blackChecked = true;
+              break outer;
+            }
           }
         }
       }
@@ -107,25 +109,27 @@ export default class Game {
       }
     }
 
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        if (this.board[y][x]?.[0] === "b") {
-          const moves = getValidMoves(
-            this,
-            {
-              x,
-              y,
-            },
-            this.board[y][x]
-          );
+    if (whiteKing) {
+      outer: for (let y = 0; y < BOARD_SIZE; y++) {
+        for (let x = 0; x < BOARD_SIZE; x++) {
+          if (this.board[y][x]?.[0] === "b") {
+            const moves = getValidMoves(
+              this,
+              {
+                x,
+                y,
+              },
+              this.board[y][x]
+            );
 
-          if (
-            moves.some(
-              (square) => square.x === whiteKing.x && square.y === whiteKing.y
-            )
-          ) {
-            this.whiteChecked = true;
-            break outer;
+            if (
+              moves.some(
+                (square) => square.x === whiteKing.x && square.y === whiteKing.y
+              )
+            ) {
+              this.whiteChecked = true;
+              break outer;
+            }
           }
         }
       }
