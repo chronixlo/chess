@@ -32,7 +32,7 @@ export default class Game {
   onMove = null;
 
   constructor(props) {
-    this.board = props.board.split("\n").map((r) => r.split(","));
+    this.board = props.board.map((r) => [...r]);
     this.turn = props.turn ?? 0;
     this.moves = props.moves ?? 0;
 
@@ -55,19 +55,19 @@ export default class Game {
 
     let blackKing;
 
-    for (let y = 0; y < BOARD_SIZE; y++) {
+    outer: for (let y = 0; y < BOARD_SIZE; y++) {
       for (let x = 0; x < BOARD_SIZE; x++) {
         if (this.board[y][x] === "bk") {
           blackKing = {
             x,
             y,
           };
-          break;
+          break outer;
         }
       }
     }
 
-    for (let y = 0; y < BOARD_SIZE; y++) {
+    outer: for (let y = 0; y < BOARD_SIZE; y++) {
       for (let x = 0; x < BOARD_SIZE; x++) {
         if (this.board[y][x]?.[0] === "w") {
           const moves = getValidMoves(
@@ -85,7 +85,7 @@ export default class Game {
             )
           ) {
             this.blackChecked = true;
-            break;
+            break outer;
           }
         }
       }
@@ -95,19 +95,19 @@ export default class Game {
 
     let whiteKing;
 
-    for (let y = 0; y < BOARD_SIZE; y++) {
+    outer: for (let y = 0; y < BOARD_SIZE; y++) {
       for (let x = 0; x < BOARD_SIZE; x++) {
         if (this.board[y][x] === "wk") {
           whiteKing = {
             x,
             y,
           };
-          break;
+          break outer;
         }
       }
     }
 
-    for (let y = 0; y < BOARD_SIZE; y++) {
+    outer: for (let y = 0; y < BOARD_SIZE; y++) {
       for (let x = 0; x < BOARD_SIZE; x++) {
         if (this.board[y][x]?.[0] === "b") {
           const moves = getValidMoves(
@@ -125,7 +125,7 @@ export default class Game {
             )
           ) {
             this.whiteChecked = true;
-            break;
+            break outer;
           }
         }
       }
@@ -246,9 +246,5 @@ export default class Game {
     if (this.onEndTurn) {
       this.onEndTurn();
     }
-  }
-
-  getBoardString() {
-    return this.board.map((rank) => rank.join(",")).join("\n");
   }
 }

@@ -1,8 +1,8 @@
-import { BOARD_SIZE, PIECE_CHARACTERS } from "./consts";
+import { BOARD_SIZE, INITIAL_BOARD, PIECE_CHARACTERS } from "./consts";
 import { doCpuMove } from "./cpu";
 import Game from "./Game";
 
-const cpuDepth = 2;
+const cpuDepth = 1;
 
 export class App {
   gameState = null;
@@ -11,9 +11,7 @@ export class App {
   piecesElement = null;
   cellsElement = null;
   statusText = null;
-  gameMode = "cpu";
-  // gameMode = "cvc";
-  // gameMode = "1v1";
+  gameMode = "cpu"; // cpu | cvc | 1v1
 
   constructor() {
     this.clickLayer = document.querySelector("#click-layer");
@@ -36,14 +34,7 @@ export class App {
 
   init() {
     this.gameState = new Game({
-      board: `br,bn,bb,bq,bk,bb,bn,br
-bp,bp,bp,bp,bp,bp,bp,bp
-,,,,,,,
-,,,,,,,
-,,,,,,,
-,,,,,,,
-wp,wp,wp,wp,wp,wp,wp,wp
-wr,wn,wb,wq,wk,wb,wn,wr`,
+      board: INITIAL_BOARD,
       onEndTurn: this.onEndTurn,
       onMove: this.onMove,
     });
@@ -62,13 +53,7 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
       .forEach((tile) => tile.classList.remove("check"));
 
     if (this.gameMode === "cvc") {
-      setTimeout(() => {
-        doCpuMove(
-          this.gameState,
-          this.gameState.turn === 0 ? "w" : "b",
-          cpuDepth
-        );
-      }, 100);
+      this.doCpuMove();
     }
   }
 
@@ -83,14 +68,14 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
     if (this.gameState.blackChecked) {
       let blackKing;
 
-      for (let y = 0; y < BOARD_SIZE; y++) {
+      outer: for (let y = 0; y < BOARD_SIZE; y++) {
         for (let x = 0; x < BOARD_SIZE; x++) {
           if (this.gameState.board[y][x] === "bk") {
             blackKing = {
               x,
               y,
             };
-            break;
+            break outer;
           }
         }
       }
@@ -104,14 +89,14 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
     if (this.gameState.whiteChecked) {
       let whiteKing;
 
-      for (let y = 0; y < BOARD_SIZE; y++) {
+      outer: for (let y = 0; y < BOARD_SIZE; y++) {
         for (let x = 0; x < BOARD_SIZE; x++) {
           if (this.gameState.board[y][x] === "wk") {
             whiteKing = {
               x,
               y,
             };
-            break;
+            break outer;
           }
         }
       }
@@ -121,18 +106,26 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
       whiteKingSquare.classList.add("check");
     }
 
-    setTimeout(() => {
-      if (this.gameState.turn === 1 && this.gameMode === "cpu") {
-        doCpuMove(this.gameState, "b", cpuDepth);
-      } else if (this.gameMode === "cvc") {
-        doCpuMove(
-          this.gameState,
-          this.gameState.turn === 0 ? "w" : "b",
-          cpuDepth
-        );
-      }
-    }, 100);
+    if (
+      (this.gameState.turn === 1 && this.gameMode === "cpu") ||
+      this.gameMode === "cvc"
+    ) {
+      this.doCpuMove();
+    }
   };
+
+  doCpuMove() {
+    setTimeout(() => {
+      const d = Date.now();
+      doCpuMove(
+        this.gameState,
+        this.gameState.turn === 0 ? "w" : "b",
+        cpuDepth
+      );
+
+      console.log("moved in " + Math.round((Date.now() - d) / 1000) + "s");
+    }, 100);
+  }
 
   onMove = (fromSquare, toSquare) => {
     this.cellsElement
@@ -207,10 +200,6 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
     );
 
     selected.classList.add("selected");
-  }
-
-  getBoardString() {
-    return this.board.map((rank) => rank.join(",")).join("\n");
   }
 }
 

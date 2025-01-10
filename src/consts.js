@@ -17,3 +17,14 @@ export const PIECE_CHARACTERS = {
   p: "♟",
   n: "♞",
 };
+
+const boardString = `br,bn,bb,bq,bk,bb,bn,br
+bp,bp,bp,bp,bp,bp,bp,bp
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+wp,wp,wp,wp,wp,wp,wp,wp
+wr,wn,wb,wq,wk,wb,wn,wr`;
+
+export const INITIAL_BOARD = boardString.split("\n").map((r) => r.split(","));

@@ -42,7 +42,6 @@ export function getValidMovesNoCheck(gameState, square, piece) {
   return validMoves.filter((newSquare) => {
     const newGameState = new Game({
       ...gameState,
-      board: gameState.getBoardString(),
       onEndTurn: null,
       onMove: null,
     });
@@ -119,4 +118,8 @@ export function getMovesByDeltas(gameState, square, color, deltas) {
     }
   }
   return squares;
+}
+
+export function getBoardString(board) {
+  return board.map((rank) => rank.join(",")).join("\n");
 }

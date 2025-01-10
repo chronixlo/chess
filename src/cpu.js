@@ -34,7 +34,6 @@ export function doCpuMove(gameState, color, depth) {
 
           const newGameState = new Game({
             ...gameState,
-            board: gameState.getBoardString(),
             onEndTurn: null,
             onMove: null,
           });
