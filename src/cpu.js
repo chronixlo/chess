@@ -66,7 +66,7 @@ export function doCpuMove(gameState, color, depth) {
             const rank = color === "b" ? square.y : BOARD_SIZE - 1 - square.y;
 
             if (rank > 4) {
-              value += (BOARD_SIZE - rank) * 0.1;
+              value += rank * 0.1;
             }
 
             // try to advance central pawns
