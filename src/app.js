@@ -20,6 +20,7 @@ export class App {
     this.piecesElement = document.querySelector("#pieces");
     this.cellsElement = document.querySelector("#cells");
     this.statusText = document.querySelector("#status-text");
+    this.moveText = document.querySelector("#move");
     this.oneOnOneButton = document.querySelector("#oneOnOne");
     this.cpuButton = document.querySelector("#cpu");
     this.cvcButton = document.querySelector("#cvc");
@@ -170,17 +171,22 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
   }
 
   updateStatus() {
-    let text;
+    const color = this.gameState.turn === 0 ? "White" : "Black";
 
+    let text;
     if (this.gameMode === "1v1") {
-      text = (this.gameState.turn === 0 ? "White" : "Black") + " to move";
+      text = color + " to move";
     } else if (this.gameMode === "cpu") {
-      text = this.gameState.turn === 0 ? "White to move" : "Thinking...";
+      text = color + (this.gameState.turn === 0 ? " to move" : " thinking...");
     } else {
-      text = "Thinking...";
+      text = color + " thinking...";
     }
 
     this.statusText.textContent = text;
+
+    this.moveText.textContent = `Move ${
+      Math.floor(this.gameState.moves / 2) + 1
+    }`;
   }
 
   setGameMode(mode) {

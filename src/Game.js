@@ -3,6 +3,7 @@ import { getValidMoves } from "./utils";
 
 export default class Game {
   turn = 0;
+  moves = 0;
 
   // 'w' | 'b' | 'draw'
   result = null;
@@ -33,6 +34,7 @@ export default class Game {
   constructor(props) {
     this.board = props.board.split("\n").map((r) => r.split(","));
     this.turn = props.turn ?? 0;
+    this.moves = props.moves ?? 0;
 
     this.canWhiteCastleQueenside = props.canWhiteCastleQueenside ?? true;
     this.canWhiteCastleKingside = props.canWhiteCastleKingside ?? true;
@@ -237,6 +239,7 @@ export default class Game {
 
   endTurn() {
     this.turn = 1 - this.turn;
+    this.moves++;
 
     this.updateChecked();
 

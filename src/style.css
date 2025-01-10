@@ -62,7 +62,8 @@ html {
   box-shadow: inset 2px 2px 12px #333a;
 }
 
-#status-text {
+#status-text,
+#move {
   padding: 10px;
   background: #666;
   border-radius: 8px;
