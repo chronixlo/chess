@@ -2,6 +2,8 @@ import { BOARD_SIZE, PIECE_CHARACTERS } from "./consts";
 import { doCpuMove } from "./cpu";
 import Game from "./Game";
 
+const cpuDepth = 2;
+
 export class App {
   gameState = null;
 
@@ -60,7 +62,11 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
 
     if (this.gameMode === "cvc") {
       setTimeout(() => {
-        doCpuMove(this.gameState, this.gameState.turn === 0 ? "w" : "b", 2);
+        doCpuMove(
+          this.gameState,
+          this.gameState.turn === 0 ? "w" : "b",
+          cpuDepth
+        );
       }, 100);
     }
   }
@@ -116,9 +122,13 @@ wr,wn,wb,wq,wk,wb,wn,wr`,
 
     setTimeout(() => {
       if (this.gameState.turn === 1 && this.gameMode === "cpu") {
-        doCpuMove(this.gameState, "b", 2);
+        doCpuMove(this.gameState, "b", cpuDepth);
       } else if (this.gameMode === "cvc") {
-        doCpuMove(this.gameState, this.gameState.turn === 0 ? "w" : "b", 2);
+        doCpuMove(
+          this.gameState,
+          this.gameState.turn === 0 ? "w" : "b",
+          cpuDepth
+        );
       }
     }, 100);
   };

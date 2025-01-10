@@ -104,21 +104,25 @@ html {
 }
 
 .cell.selected {
-  filter: sepia(1);
+  background: #cb6 !important;
 }
 
-.cell.last-move-from::after {
+.cell.last-move-from::before {
   content: "";
   position: absolute;
   inset: 0;
   background: #8f84;
 }
 
-.cell.last-move-to::after {
+.cell.last-move-to::before {
   content: "";
   position: absolute;
   inset: 0;
   background: #9d94;
+}
+
+.cell.valid-move {
+  filter: sepia(0.5) brightness(1.1);
 }
 
 .cell.valid-move::after {
@@ -133,7 +137,7 @@ html {
 }
 
 .cell.check {
-  background: #f00c !important;
+  background: #f00d !important;
 }
 
 #pieces {

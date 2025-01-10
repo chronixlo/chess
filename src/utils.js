@@ -43,7 +43,6 @@ export function getValidMovesNoCheck(gameState, square, piece) {
     const newGameState = new Game({
       ...gameState,
       board: gameState.getBoardString(),
-      sim: true,
       onEndTurn: null,
       onMove: null,
     });

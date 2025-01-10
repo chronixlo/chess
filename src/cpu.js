@@ -30,29 +30,45 @@ export function doCpuMove(gameState, color, depth) {
           const willBeOnTheEdge = getIsOnTheEdge(square.x, square.y);
 
           //   console.count("calcs");
-          let value = Math.random() * 0.2 - 0.1;
+          let value = Math.random() * 0.1;
 
           const newGameState = new Game({
             ...gameState,
             board: gameState.getBoardString(),
-            sim: true,
             onEndTurn: null,
             onMove: null,
           });
           newGameState.move({ x, y }, square);
           newGameState.endTurn();
 
-          // avoid kings moves besides castling
+          if (
+            color === "w"
+              ? newGameState.blackChecked
+              : newGameState.whiteChecked
+          ) {
+            value += 0.6;
+          }
+
+          // avoid king moves besides castling
           if (pieceType === "k") {
-            if (Math.abs(x - square.x) === 2) {
+            // prefer kingside
+            if (square.x - x === 2) {
+              value += 0.6;
+            } else if (x - square.x === 2) {
               value += 0.5;
             } else {
               value -= 0.5;
             }
-          }
-          // try to play central pawns
-          else if (pieceType === "p") {
-            if (x === 3 || x === 4) {
+          } else if (pieceType === "p") {
+            // advance close to promotion
+            const rank = color === "b" ? square.y : BOARD_SIZE - 1 - square.y;
+
+            if (rank > 4) {
+              value += (BOARD_SIZE - rank) * 0.1;
+            }
+
+            // try to advance central pawns
+            if ((x === 3 || x === 4) && square.x === x) {
               if (Math.abs(y - square.y) === 2) {
                 value += 0.7;
               } else {
@@ -78,6 +94,24 @@ export function doCpuMove(gameState, color, depth) {
               value -= 0.2;
             }
           }
+          // centralize queens
+          else if (pieceType === "q") {
+            if (isOnTheEdge) {
+              value += 0.2;
+            }
+            if (willBeOnTheEdge) {
+              value -= 0.2;
+            }
+          }
+          // centralize rooks
+          else if (pieceType === "r") {
+            if (isOnTheEdge) {
+              value += 0.2;
+            }
+            if (willBeOnTheEdge) {
+              value -= 0.2;
+            }
+          }
 
           if (depth > 0) {
             doCpuMove(newGameState, enemyColor, depth - 1);
@@ -85,9 +119,6 @@ export function doCpuMove(gameState, color, depth) {
 
           const evaluationDelta = getEvaluation(newGameState) - evaluation;
           value += color === "b" ? -evaluationDelta : evaluationDelta;
-
-          //   if (depth === 1 && value !== 0 && color === "b")
-          //     console.log({ x, y }, square, value);
 
           if (bestMove == null || value > bestMove?.value) {
             bestMove = { fromSquare: { x, y }, toSquare: square, value };
