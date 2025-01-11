@@ -18,14 +18,14 @@ export const PIECE_CHARACTERS = {
   n: "♞",
 };
 
-// const boardString = `,,,,,,,bk
+// const boardString = `,wr,,,,,br,bk
+// ,,,,,,bb,bp
 // ,,,,,,,
+// ,,,,wb,,,
 // ,,,,,,,
-// ,,,,,,,
-// ,,,bq,,,,
-// ,,,,,,,
-// wp,,,,,,,
-// ,,,,wk,,,`;
+// ,wk,,,,,,
+// ,,,,,,,wq
+// ,,,,,,,`;
 
 const boardString = `br,bn,bb,bq,bk,bb,bn,br
 bp,bp,bp,bp,bp,bp,bp,bp
