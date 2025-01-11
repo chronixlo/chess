@@ -112,11 +112,11 @@ export function doCpuMove(gameState, color, depth) {
           if (depth > 0) {
             const calculations = doCpuMove(newGameState, enemyColor, depth - 1);
             count += calculations.count;
+
             if (calculations.bestMove) {
-              value +=
-                color === "b"
-                  ? -calculations.bestMove.value
-                  : calculations.bestMove.value;
+              value -= calculations.bestMove.value;
+            } else {
+              value += 1000;
             }
           }
 
