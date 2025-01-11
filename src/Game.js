@@ -1,5 +1,5 @@
 import { BOARD_SIZE } from "./consts";
-import { getValidMoves } from "./utils";
+import { getPieceSquare, getValidPieceMoves } from "./utils";
 
 export default class Game {
   turn = 0;
@@ -53,25 +53,13 @@ export default class Game {
     this.blackChecked = false;
     this.whiteChecked = false;
 
-    let blackKing;
-
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        if (this.board[y][x] === "bk") {
-          blackKing = {
-            x,
-            y,
-          };
-          break outer;
-        }
-      }
-    }
+    const blackKing = getPieceSquare(this, "bk");
 
     if (blackKing) {
       outer: for (let y = 0; y < BOARD_SIZE; y++) {
         for (let x = 0; x < BOARD_SIZE; x++) {
           if (this.board[y][x]?.[0] === "w") {
-            const moves = getValidMoves(
+            const moves = getValidPieceMoves(
               this,
               {
                 x,
@@ -95,25 +83,13 @@ export default class Game {
 
     //
 
-    let whiteKing;
-
-    outer: for (let y = 0; y < BOARD_SIZE; y++) {
-      for (let x = 0; x < BOARD_SIZE; x++) {
-        if (this.board[y][x] === "wk") {
-          whiteKing = {
-            x,
-            y,
-          };
-          break outer;
-        }
-      }
-    }
+    const whiteKing = getPieceSquare(this, "wk");
 
     if (whiteKing) {
       outer: for (let y = 0; y < BOARD_SIZE; y++) {
         for (let x = 0; x < BOARD_SIZE; x++) {
           if (this.board[y][x]?.[0] === "b") {
-            const moves = getValidMoves(
+            const moves = getValidPieceMoves(
               this,
               {
                 x,

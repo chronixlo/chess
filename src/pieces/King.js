@@ -1,5 +1,5 @@
 import { BOARD_SIZE } from "../consts";
-import { getValidMoves, isInside, isOwnOccupied } from "../utils";
+import { getValidPieceMoves, isInside, isOwnOccupied } from "../utils";
 
 export default function getValidKingMoves(gameState, square, color, noCastles) {
   const squares = [];
@@ -71,7 +71,7 @@ function getCastleSquares(gameState, square, enemyColor, side) {
     for (let x = 0; x < BOARD_SIZE; x++) {
       const piece = gameState.board[y][x];
       if (piece?.[0] === enemyColor) {
-        const squares = getValidMoves(
+        const squares = getValidPieceMoves(
           gameState,
           {
             x,

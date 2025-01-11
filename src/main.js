@@ -1,7 +1,7 @@
 import { BOARD_SIZE } from "./consts";
 import app from "./app";
 import "./style.css";
-import { getValidMovesNoCheck } from "./utils";
+import { getValidPieceMovesNoCheck } from "./utils";
 
 for (let y = 0; y < BOARD_SIZE; y++) {
   const row = document.createElement("div");
@@ -37,7 +37,7 @@ const onPieceClick = (square, piece) => {
   selectedPiece = piece;
 
   // show valid moves
-  const validMoves = getValidMovesNoCheck(app.gameState, square, piece);
+  const validMoves = getValidPieceMovesNoCheck(app.gameState, square, piece);
 
   validMoves.forEach((tile) => {
     const validMoveTile = app.cellsElement.querySelector(
@@ -65,7 +65,7 @@ const onBoardClick = (e) => {
     return;
   }
 
-  const validMoves = getValidMovesNoCheck(
+  const validMoves = getValidPieceMovesNoCheck(
     app.gameState,
     selectedSquare,
     selectedPiece

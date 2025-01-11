@@ -1,7 +1,7 @@
-import { BOARD_SIZE, INITIAL_BOARD, PIECE_CHARACTERS } from "./consts";
+import { INITIAL_BOARD, PIECE_CHARACTERS } from "./consts";
 import { doCpuMove } from "./cpu";
 import Game from "./Game";
-import { toShort } from "./utils";
+import { getPieceSquare, toShort } from "./utils";
 
 const cpuDepth = 2;
 
@@ -69,19 +69,7 @@ export class App {
       .forEach((tile) => tile.classList.remove("check"));
 
     if (this.gameState.blackChecked) {
-      let blackKing;
-
-      outer: for (let y = 0; y < BOARD_SIZE; y++) {
-        for (let x = 0; x < BOARD_SIZE; x++) {
-          if (this.gameState.board[y][x] === "bk") {
-            blackKing = {
-              x,
-              y,
-            };
-            break outer;
-          }
-        }
-      }
+      const blackKing = getPieceSquare(this.gameState, "bk");
 
       const blackKingSquare = this.cellsElement.querySelector(
         `.cell-${blackKing.x}-${blackKing.y}`
@@ -90,19 +78,8 @@ export class App {
     }
 
     if (this.gameState.whiteChecked) {
-      let whiteKing;
+      const whiteKing = getPieceSquare(this.gameState, "wk");
 
-      outer: for (let y = 0; y < BOARD_SIZE; y++) {
-        for (let x = 0; x < BOARD_SIZE; x++) {
-          if (this.gameState.board[y][x] === "wk") {
-            whiteKing = {
-              x,
-              y,
-            };
-            break outer;
-          }
-        }
-      }
       const whiteKingSquare = this.cellsElement.querySelector(
         `.cell-${whiteKing.x}-${whiteKing.y}`
       );

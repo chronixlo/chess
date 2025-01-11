@@ -1,6 +1,6 @@
 import { BOARD_SIZE, PIECE_VALUES } from "./consts";
 import Game from "./Game";
-import { getIsOnTheEdge, getValidMovesNoCheck } from "./utils";
+import { getIsOnTheEdge, getValidPieceMovesNoCheck } from "./utils";
 
 export function doCpuMove(gameState, color, depth) {
   let count = 0;
@@ -18,7 +18,7 @@ export function doCpuMove(gameState, color, depth) {
         const pieceType = piece[1];
         const isOnTheEdge = getIsOnTheEdge(x, y);
 
-        const squares = getValidMovesNoCheck(
+        const squares = getValidPieceMovesNoCheck(
           gameState,
           {
             x,
