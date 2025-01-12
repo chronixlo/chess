@@ -3,7 +3,7 @@ import { doCpuMove } from "./cpu";
 import Game from "./Game";
 import { getPieceSquare, toShort } from "./utils";
 
-const cpuDepth = 2;
+const cpuDepth = 3;
 
 export class App {
   gameState = null;
