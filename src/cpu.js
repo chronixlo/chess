@@ -109,11 +109,13 @@ export function doCpuMove(gameState, color, depth) {
             }
           }
 
+          let sub;
           if (depth > 0) {
             const calculations = doCpuMove(newGameState, enemyColor, depth - 1);
             count += calculations.count;
 
             if (calculations.bestMove) {
+              sub = calculations.bestMove;
               value -= calculations.bestMove.value;
             } else {
               value += 1000;
@@ -124,7 +126,7 @@ export function doCpuMove(gameState, color, depth) {
           value += color === "b" ? -evaluationDelta : evaluationDelta;
 
           if (bestMove == null || value > bestMove?.value) {
-            bestMove = { fromSquare: { x, y }, toSquare: square, value };
+            bestMove = { fromSquare: { x, y }, toSquare: square, value, sub };
           }
         }
       }

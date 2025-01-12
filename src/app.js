@@ -97,11 +97,13 @@ export class App {
   doCpuMove() {
     setTimeout(() => {
       const d = Date.now();
-      const { count } = doCpuMove(
+      const { count, bestMove } = doCpuMove(
         this.gameState,
         this.gameState.turn === 0 ? "w" : "b",
         cpuDepth
       );
+
+      console.log(bestMove);
 
       this.calculationsText.textContent = `Evaluated ${toShort(
         count
