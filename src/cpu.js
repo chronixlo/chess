@@ -12,6 +12,7 @@ export function doCpuMove(gameState, color, depth) {
 
   for (let y = 0; y < BOARD_SIZE; y++) {
     for (let x = 0; x < BOARD_SIZE; x++) {
+      const square = { x, y };
       const piece = gameState.board[y][x];
 
       if (piece?.[0] === color) {
@@ -20,15 +21,15 @@ export function doCpuMove(gameState, color, depth) {
 
         const squares = getValidPieceMovesNoCheck(
           gameState,
-          {
-            x,
-            y,
-          },
+          square,
           gameState.board[y][x]
         );
 
-        for (let square of squares) {
-          const willBeOnTheEdge = getIsOnTheEdge(square.x, square.y);
+        for (let destinationSquare of squares) {
+          const willBeOnTheEdge = getIsOnTheEdge(
+            destinationSquare.x,
+            destinationSquare.y
+          );
 
           //   console.count("calcs");
           let value = Math.random() * 0.1;
@@ -38,7 +39,7 @@ export function doCpuMove(gameState, color, depth) {
             onEndTurn: null,
             onMove: null,
           });
-          newGameState.move({ x, y }, square);
+          newGameState.move(square, destinationSquare);
           newGameState.endTurn();
 
           count++;
@@ -54,24 +55,27 @@ export function doCpuMove(gameState, color, depth) {
           // avoid king moves besides castling
           if (pieceType === "k") {
             // prefer kingside
-            if (square.x - x === 2) {
+            if (destinationSquare.x - x === 2) {
               value += 0.6;
-            } else if (x - square.x === 2) {
+            } else if (x - destinationSquare.x === 2) {
               value += 0.5;
             } else {
               value -= 0.5;
             }
           } else if (pieceType === "p") {
             // advance close to promotion
-            const rank = color === "b" ? square.y : BOARD_SIZE - 1 - square.y;
+            const rank =
+              color === "b"
+                ? destinationSquare.y
+                : BOARD_SIZE - 1 - destinationSquare.y;
 
             if (rank > 4) {
               value += rank * 0.1;
             }
 
             // try to advance central pawns
-            if ((x === 3 || x === 4) && square.x === x) {
-              if (Math.abs(y - square.y) === 2) {
+            if ((x === 3 || x === 4) && destinationSquare.x === x) {
+              if (Math.abs(y - destinationSquare.y) === 2) {
                 value += 0.7;
               } else {
                 value += 0.4;
@@ -126,7 +130,12 @@ export function doCpuMove(gameState, color, depth) {
           value += color === "b" ? -evaluationDelta : evaluationDelta;
 
           if (bestMove == null || value > bestMove?.value) {
-            bestMove = { fromSquare: { x, y }, toSquare: square, value, sub };
+            bestMove = {
+              fromSquare: square,
+              toSquare: destinationSquare,
+              value,
+              sub,
+            };
           }
         }
       }

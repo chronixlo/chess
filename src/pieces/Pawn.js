@@ -10,11 +10,11 @@ export default function getValidPawnMoves(gameState, square, color) {
 
   // double move
   if (possibleMoves.length && !isOccupied(gameState, possibleMoves[0])) {
-    possibleMoves.push(
-      ...(color === "w"
-        ? [...(square.y === 6 ? [{ x: square.x, y: square.y - 2 }] : [])]
-        : [...(square.y === 1 ? [{ x: square.x, y: square.y + 2 }] : [])])
-    );
+    if (color === "w" && square.y === 6) {
+      possibleMoves.push({ x: square.x, y: square.y - 2 });
+    } else if (color === "b" && square.y === 1) {
+      possibleMoves.push({ x: square.x, y: square.y + 2 });
+    }
   }
 
   const possibleCaptures =
@@ -36,8 +36,6 @@ export default function getValidPawnMoves(gameState, square, color) {
 
   moves.push(
     ...possibleCaptures.filter(isInside).filter((square) => {
-      const occupyingPiece = gameState.board[square.y][square.x];
-
       if (
         color === "w" &&
         gameState.blackEnPassant?.x === square.x &&
@@ -53,6 +51,8 @@ export default function getValidPawnMoves(gameState, square, color) {
       ) {
         return true;
       }
+
+      const occupyingPiece = gameState.board[square.y][square.x];
 
       if (occupyingPiece?.[0] === undefined || occupyingPiece[0] === color) {
         return false;
