@@ -45,8 +45,9 @@ export function getValidPieceMovesNoCheck(gameState, square, piece) {
       onEndTurn: null,
       onMove: null,
     });
+    // do move and update checked without ending turn
     newGameState.move(square, newSquare);
-    newGameState.endTurn();
+    newGameState.updateChecked();
 
     return piece[0] === "w"
       ? !newGameState.whiteChecked
