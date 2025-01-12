@@ -1,5 +1,7 @@
-import { BOARD_SIZE } from "./consts";
-import { getPieceSquare, getValidPieceMoves } from "./utils";
+import getValidBishopMoves from "./pieces/bishop";
+import getValidKnightMoves from "./pieces/knight";
+import getValidRookMoves from "./pieces/rook";
+import { getPieceSquare, isInside } from "./utils";
 
 export default class Game {
   turn = 0;
@@ -53,62 +55,86 @@ export default class Game {
     this.blackChecked = false;
     this.whiteChecked = false;
 
-    const blackKing = getPieceSquare(this, "bk");
+    const color = this.turn === 0 ? "w" : "b";
+    const enemyColor = this.turn === 0 ? "b" : "w";
+    const king = getPieceSquare(this, color + "k");
 
-    if (blackKing) {
-      outer: for (let y = 0; y < BOARD_SIZE; y++) {
-        for (let x = 0; x < BOARD_SIZE; x++) {
-          if (this.board[y][x]?.[0] === "w") {
-            const moves = getValidPieceMoves(
-              this,
-              {
-                x,
-                y,
-              },
-              this.board[y][x]
-            );
-
-            if (
-              moves.some(
-                (square) => square.x === blackKing.x && square.y === blackKing.y
-              )
-            ) {
-              this.blackChecked = true;
-              break outer;
-            }
-          }
-        }
-      }
+    if (!king) {
+      return;
     }
 
-    //
-
-    const whiteKing = getPieceSquare(this, "wk");
-
-    if (whiteKing) {
-      outer: for (let y = 0; y < BOARD_SIZE; y++) {
-        for (let x = 0; x < BOARD_SIZE; x++) {
-          if (this.board[y][x]?.[0] === "b") {
-            const moves = getValidPieceMoves(
-              this,
-              {
-                x,
-                y,
-              },
-              this.board[y][x]
-            );
-
-            if (
-              moves.some(
-                (square) => square.x === whiteKing.x && square.y === whiteKing.y
-              )
-            ) {
-              this.whiteChecked = true;
-              break outer;
-            }
-          }
-        }
+    const setChecked = () => {
+      if (color === "b") {
+        this.blackChecked = true;
+      } else {
+        this.whiteChecked = true;
       }
+    };
+
+    const knightMoves = getValidKnightMoves(this, king, color);
+    if (
+      knightMoves.some(
+        (square) => this.board[square.y][square.x] === enemyColor + "n"
+      )
+    ) {
+      setChecked();
+      return;
+    }
+
+    const bishopMoves = getValidBishopMoves(this, king, color);
+    if (
+      bishopMoves.some(
+        (square) =>
+          this.board[square.y][square.x] === enemyColor + "b" ||
+          this.board[square.y][square.x] === enemyColor + "q"
+      )
+    ) {
+      setChecked();
+      return;
+    }
+
+    const rookMoves = getValidRookMoves(this, king, color);
+    if (
+      rookMoves.some(
+        (square) =>
+          this.board[square.y][square.x] === enemyColor + "r" ||
+          this.board[square.y][square.x] === enemyColor + "q"
+      )
+    ) {
+      setChecked();
+      return;
+    }
+
+    const pawnMoves =
+      color === "b"
+        ? [
+            {
+              x: king.x + 1,
+              y: king.y + 1,
+            },
+            {
+              x: king.x - 1,
+              y: king.y + 1,
+            },
+          ]
+        : [
+            {
+              x: king.x + 1,
+              y: king.y - 1,
+            },
+            {
+              x: king.x - 1,
+              y: king.y - 1,
+            },
+          ];
+
+    if (
+      pawnMoves
+        .filter(isInside)
+        .some((square) => this.board[square.y][square.x] === enemyColor + "p")
+    ) {
+      setChecked();
+      return;
     }
   }
 
