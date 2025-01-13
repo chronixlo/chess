@@ -126,8 +126,11 @@ export function getBoardString(board) {
 }
 
 export function toShort(value) {
+  if (value > 1e6) {
+    return Math.round(value / 1e5) / 10 + "M";
+  }
   if (value > 10000) {
-    return Math.round(value / 100) / 10 + "k";
+    return Math.round(value / 100) / 10 + "K";
   }
   return value;
 }

@@ -3,8 +3,6 @@ import { doCpuMove } from "./cpu";
 import Game from "./Game";
 import { getPieceSquare, toShort } from "./utils";
 
-const cpuDepth = 3;
-
 export class App {
   gameState = null;
 
@@ -99,8 +97,7 @@ export class App {
       const d = Date.now();
       const { count, bestMove } = doCpuMove(
         this.gameState,
-        this.gameState.turn === 0 ? "w" : "b",
-        cpuDepth
+        this.gameState.turn === 0 ? "w" : "b"
       );
 
       console.log(bestMove);
