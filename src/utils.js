@@ -161,3 +161,73 @@ export function getPieceSquare(gameState, piece) {
     }
   }
 }
+
+export function canBeCaptured(gameState, square, color) {
+  const enemyColor = color === "w" ? "b" : "w";
+
+  const knightMoves = getValidKnightMoves(gameState, square, color);
+  if (
+    knightMoves.some(
+      (square) => gameState.board[square.y][square.x] === enemyColor + "n"
+    )
+  ) {
+    return true;
+  }
+
+  const bishopMoves = getValidBishopMoves(gameState, square, color);
+  if (
+    bishopMoves.some(
+      (square) =>
+        gameState.board[square.y][square.x] === enemyColor + "b" ||
+        gameState.board[square.y][square.x] === enemyColor + "q"
+    )
+  ) {
+    return true;
+  }
+
+  const rookMoves = getValidRookMoves(gameState, square, color);
+  if (
+    rookMoves.some(
+      (square) =>
+        gameState.board[square.y][square.x] === enemyColor + "r" ||
+        gameState.board[square.y][square.x] === enemyColor + "q"
+    )
+  ) {
+    return true;
+  }
+
+  const pawnMoves =
+    color === "b"
+      ? [
+          {
+            x: square.x + 1,
+            y: square.y + 1,
+          },
+          {
+            x: square.x - 1,
+            y: square.y + 1,
+          },
+        ]
+      : [
+          {
+            x: square.x + 1,
+            y: square.y - 1,
+          },
+          {
+            x: square.x - 1,
+            y: square.y - 1,
+          },
+        ];
+
+  if (
+    pawnMoves
+      .filter(isInside)
+      .some(
+        (square) => gameState.board[square.y][square.x] === enemyColor + "p"
+      )
+  ) {
+    return true;
+  }
+
+  return false;
+}

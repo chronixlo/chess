@@ -1,11 +1,16 @@
 import { BOARD_SIZE, PIECE_VALUES } from "./consts";
 import Game from "./Game";
-import { getIsOnTheEdge, getPieces, getValidPieceMovesNoCheck } from "./utils";
+import {
+  canBeCaptured,
+  getIsOnTheEdge,
+  getPieces,
+  getValidPieceMovesNoCheck,
+} from "./utils";
 
-const MAX_STEPS = 4;
+const MAX_DEPTH = 3;
 const MOVES_PER_DEPTH = {
-  0: 20,
-  1: 15,
+  0: 100,
+  1: 30,
   2: 10,
   3: 7,
   4: 4,
@@ -140,7 +145,7 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
 
   moves = moves.slice(0, MOVES_PER_DEPTH[depth] || 2);
 
-  if (depth < MAX_STEPS && runningCount < 1e6) {
+  if (depth < MAX_DEPTH && runningCount < 1e6) {
     moves.forEach((move) => {
       let value = move.value;
 
@@ -156,6 +161,11 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
       if (calculations.bestMove) {
         sub = calculations.bestMove;
         value -= calculations.bestMove.value / 1.1;
+      } else {
+        // mate, both false is stalemate
+        if (move.gameState.blackChecked || move.gameState.whiteChecked) {
+          value += 1000;
+        }
       }
 
       if (bestMove == null || value > bestMove?.value) {
@@ -171,7 +181,22 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
   } else {
     bestMove = moves.reduce((prev, next) => {
       if (!prev || next.value > prev.value) {
-        return next;
+        const occupyingPiece =
+          next.gameState.board[next.toSquare.y][next.toSquare.x];
+        const canBeTaken = canBeCaptured(
+          next.gameState,
+          next.toSquare,
+          occupyingPiece[0]
+        );
+        const newValue =
+          next.value - (canBeTaken ? PIECE_VALUES[occupyingPiece[1]] : 0);
+
+        if (!prev || newValue > prev.value) {
+          return {
+            ...next,
+            value: newValue,
+          };
+        }
       }
       return prev;
     }, null);
