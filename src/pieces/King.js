@@ -2,17 +2,7 @@ import { BOARD_SIZE } from "../consts";
 import { getValidPieceMoves, isInside, isOwnOccupied } from "../utils";
 
 export default function getValidKingMoves(gameState, square, color, noCastles) {
-  const squares = [];
-
-  // normal moves
-  for (let i = -1; i < 2; i++) {
-    for (let j = -1; j < 2; j++) {
-      if (i === 0 && j === 0) {
-        continue;
-      }
-      squares.push({ x: square.x + i, y: square.y + j });
-    }
-  }
+  const squares = getKingMoves(square);
 
   // castles
   if (
@@ -58,6 +48,13 @@ export default function getValidKingMoves(gameState, square, color, noCastles) {
 
   return squares
     .filter(isInside)
+    .filter((square) => {
+      const moves = getKingMoves(square).filter(isInside);
+      return !moves.some(
+        (move) =>
+          gameState.board[move.y][move.x] === (color === "b" ? "wk" : "bk")
+      );
+    })
     .filter((square) => !isOwnOccupied(gameState, square, color));
 }
 
@@ -97,4 +94,17 @@ function getCastleSquares(gameState, square, enemyColor, side) {
   }
 
   return [];
+}
+
+function getKingMoves(square) {
+  const squares = [];
+  for (let i = -1; i < 2; i++) {
+    for (let j = -1; j < 2; j++) {
+      if (i === 0 && j === 0) {
+        continue;
+      }
+      squares.push({ x: square.x + i, y: square.y + j });
+    }
+  }
+  return squares;
 }

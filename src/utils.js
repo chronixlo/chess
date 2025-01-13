@@ -162,8 +162,19 @@ export function getPieceSquare(gameState, piece) {
   }
 }
 
-export function canBeCaptured(gameState, square, color) {
+export function canBeCaptured(gameState, square, color, allowKing) {
   const enemyColor = color === "w" ? "b" : "w";
+
+  if (allowKing) {
+    const kingMoves = getValidKingMoves(gameState, square, color, true);
+    if (
+      kingMoves.some(
+        (square) => gameState.board[square.y][square.x] === enemyColor + "k"
+      )
+    ) {
+      return true;
+    }
+  }
 
   const knightMoves = getValidKnightMoves(gameState, square, color);
   if (

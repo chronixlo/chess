@@ -59,7 +59,7 @@ export default class Game {
       return;
     }
 
-    if (canBeCaptured(this, king, color)) {
+    if (canBeCaptured(this, king, color, false)) {
       if (color === "b") {
         this.blackChecked = true;
       } else {

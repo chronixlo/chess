@@ -186,7 +186,8 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
         const canBeTaken = canBeCaptured(
           next.gameState,
           next.toSquare,
-          occupyingPiece[0]
+          occupyingPiece[0],
+          occupyingPiece[1] !== "k"
         );
         const newValue =
           next.value - (canBeTaken ? PIECE_VALUES[occupyingPiece[1]] : 0);
