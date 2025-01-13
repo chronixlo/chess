@@ -49,7 +49,7 @@ export function doCpuMove(gameState, color, depth) {
               ? newGameState.blackChecked
               : newGameState.whiteChecked
           ) {
-            value += 0.6;
+            value += 0.2;
           }
 
           // avoid king moves besides castling
@@ -113,6 +113,10 @@ export function doCpuMove(gameState, color, depth) {
             }
           }
 
+          const evaluationDelta = getEvaluation(newGameState) - evaluation;
+          value += color === "b" ? -evaluationDelta : evaluationDelta;
+          const preContinuationValue = value;
+
           let sub;
           if (depth > 0) {
             const calculations = doCpuMove(newGameState, enemyColor, depth - 1);
@@ -126,14 +130,12 @@ export function doCpuMove(gameState, color, depth) {
             }
           }
 
-          const evaluationDelta = getEvaluation(newGameState) - evaluation;
-          value += color === "b" ? -evaluationDelta : evaluationDelta;
-
           if (bestMove == null || value > bestMove?.value) {
             bestMove = {
               fromSquare: square,
               toSquare: destinationSquare,
               value,
+              preContinuationValue,
               sub,
             };
           }
