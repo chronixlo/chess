@@ -34,11 +34,12 @@ html {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 250px;
 }
 
 @media (max-width: 800px) {
   #sidebar {
-    width: 200px;
+    width: 400px;
   }
 }
 
