@@ -1,11 +1,10 @@
-import { BOARD_SIZE } from "./consts";
-import Game from "./Game";
-import getValidBishopMoves from "./pieces/bishop";
-import getValidKingMoves from "./pieces/king";
-import getValidKnightMoves from "./pieces/knight";
-import getValidPawnMoves from "./pieces/pawn";
-import getValidQueenMoves from "./pieces/queen";
-import getValidRookMoves from "./pieces/rook";
+import { BOARD_SIZE } from './consts';
+import getValidBishopMoves from './pieces/bishop';
+import getValidKingMoves from './pieces/king';
+import getValidKnightMoves from './pieces/knight';
+import getValidPawnMoves from './pieces/pawn';
+import getValidQueenMoves from './pieces/queen';
+import getValidRookMoves from './pieces/rook';
 
 export const isInside = (square) => {
   return (
@@ -17,7 +16,7 @@ export const isInside = (square) => {
 };
 
 export const isOccupied = (gameState, square) => {
-  const isOccupied = gameState.board[square.y][square.x] !== "";
+  const isOccupied = gameState.board[square.y][square.x] !== '';
 
   if (isOccupied) {
     return true;
@@ -36,50 +35,60 @@ export const isOwnOccupied = (gameState, square, color) => {
   return false;
 };
 
+/** valid moves that don't put the player's own king in check */
 export function getValidPieceMovesNoCheck(gameState, square, piece) {
   const validMoves = getValidPieceMoves(gameState, square, piece);
 
   return validMoves.filter((newSquare) => {
-    const newGameState = new Game({
-      ...gameState,
-      onEndTurn: null,
-      onMove: null,
-    });
-    // do move and update checked without ending turn
-    newGameState.move(square, newSquare);
-    newGameState.updateChecked();
+    const lastMove = {
+      square,
+      destinationSquare: newSquare,
+      piece: gameState.board[square.y][square.x],
+      destinationPiece: gameState.board[newSquare.y][newSquare.x],
+    };
 
-    return piece[0] === "w"
-      ? !newGameState.whiteChecked
-      : !newGameState.blackChecked;
+    gameState.move(square, newSquare);
+    gameState.updateChecked();
+
+    const isLegal =
+      piece[0] === 'w' ? !gameState.whiteChecked : !gameState.blackChecked;
+
+    gameState.board[lastMove.destinationSquare.y][
+      lastMove.destinationSquare.x
+    ] = lastMove.destinationPiece || '';
+    gameState.board[lastMove.square.y][lastMove.square.x] = lastMove.piece;
+    gameState.updateChecked();
+
+    return isLegal;
   });
 }
 
+/** valid moves that might not be legal */
 export function getValidPieceMoves(gameState, square, piece, noCastles) {
   const color = piece[0];
   const pieceType = piece[1];
 
-  if (pieceType === "p") {
+  if (pieceType === 'p') {
     return getValidPawnMoves(gameState, square, color);
   }
 
-  if (pieceType === "n") {
+  if (pieceType === 'n') {
     return getValidKnightMoves(gameState, square, color);
   }
 
-  if (pieceType === "b") {
+  if (pieceType === 'b') {
     return getValidBishopMoves(gameState, square, color);
   }
 
-  if (pieceType === "r") {
+  if (pieceType === 'r') {
     return getValidRookMoves(gameState, square, color);
   }
 
-  if (pieceType === "k") {
+  if (pieceType === 'k') {
     return getValidKingMoves(gameState, square, color, noCastles);
   }
 
-  if (pieceType === "q") {
+  if (pieceType === 'q') {
     return getValidQueenMoves(gameState, square, color);
   }
 
@@ -122,21 +131,21 @@ export function getMovesByDeltas(gameState, square, color, deltas) {
 }
 
 export function getBoardString(board) {
-  return board.map((rank) => rank.join(",")).join("\n");
+  return board.map((rank) => rank.join(',')).join('\n');
 }
 
 export function toShort(value) {
   if (value > 1e6) {
-    return Math.round(value / 1e5) / 10 + "M";
+    return Math.round(value / 1e5) / 10 + 'M';
   }
   if (value > 10000) {
-    return Math.round(value / 100) / 10 + "K";
+    return Math.round(value / 100) / 10 + 'K';
   }
   return value;
 }
 
 export function getPieces(gameState) {
-  const color = gameState.turn === 0 ? "w" : "b";
+  const color = gameState.turn === 0 ? 'w' : 'b';
   const pieces = [];
   for (let y = 0; y < BOARD_SIZE; y++) {
     for (let x = 0; x < BOARD_SIZE; x++) {
@@ -163,13 +172,13 @@ export function getPieceSquare(gameState, piece) {
 }
 
 export function canBeCaptured(gameState, square, color, allowKing) {
-  const enemyColor = color === "w" ? "b" : "w";
+  const enemyColor = color === 'w' ? 'b' : 'w';
 
   if (allowKing) {
     const kingMoves = getValidKingMoves(gameState, square, color, true);
     if (
       kingMoves.some(
-        (square) => gameState.board[square.y][square.x] === enemyColor + "k"
+        (square) => gameState.board[square.y][square.x] === enemyColor + 'k',
       )
     ) {
       return true;
@@ -179,7 +188,7 @@ export function canBeCaptured(gameState, square, color, allowKing) {
   const knightMoves = getValidKnightMoves(gameState, square, color);
   if (
     knightMoves.some(
-      (square) => gameState.board[square.y][square.x] === enemyColor + "n"
+      (square) => gameState.board[square.y][square.x] === enemyColor + 'n',
     )
   ) {
     return true;
@@ -189,8 +198,8 @@ export function canBeCaptured(gameState, square, color, allowKing) {
   if (
     bishopMoves.some(
       (square) =>
-        gameState.board[square.y][square.x] === enemyColor + "b" ||
-        gameState.board[square.y][square.x] === enemyColor + "q"
+        gameState.board[square.y][square.x] === enemyColor + 'b' ||
+        gameState.board[square.y][square.x] === enemyColor + 'q',
     )
   ) {
     return true;
@@ -200,15 +209,15 @@ export function canBeCaptured(gameState, square, color, allowKing) {
   if (
     rookMoves.some(
       (square) =>
-        gameState.board[square.y][square.x] === enemyColor + "r" ||
-        gameState.board[square.y][square.x] === enemyColor + "q"
+        gameState.board[square.y][square.x] === enemyColor + 'r' ||
+        gameState.board[square.y][square.x] === enemyColor + 'q',
     )
   ) {
     return true;
   }
 
   const pawnMoves =
-    color === "b"
+    color === 'b'
       ? [
           {
             x: square.x + 1,
@@ -234,7 +243,7 @@ export function canBeCaptured(gameState, square, color, allowKing) {
     pawnMoves
       .filter(isInside)
       .some(
-        (square) => gameState.board[square.y][square.x] === enemyColor + "p"
+        (square) => gameState.board[square.y][square.x] === enemyColor + 'p',
       )
   ) {
     return true;

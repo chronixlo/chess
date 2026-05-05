@@ -1,4 +1,4 @@
-import { canBeCaptured, getPieceSquare } from "./utils";
+import { canBeCaptured, getPieceSquare } from './utils';
 
 export default class Game {
   turn = 0;
@@ -19,11 +19,7 @@ export default class Game {
   whiteEnPassant = null;
   blackEnPassant = null;
 
-  clickLayer = null;
-  piecesElement = null;
-  cellsElement = null;
-  statusText = null;
-  gameMode = "cpu";
+  gameMode = 'cpu';
   // gameMode = "cvc";
   // gameMode = "1v1";
 
@@ -52,15 +48,15 @@ export default class Game {
     this.blackChecked = false;
     this.whiteChecked = false;
 
-    const color = this.turn === 0 ? "w" : "b";
-    const king = getPieceSquare(this, color + "k");
+    const color = this.turn === 0 ? 'w' : 'b';
+    const king = getPieceSquare(this, color + 'k');
 
     if (!king) {
       return;
     }
 
     if (canBeCaptured(this, king, color, false)) {
-      if (color === "b") {
+      if (color === 'b') {
         this.blackChecked = true;
       } else {
         this.whiteChecked = true;
@@ -71,7 +67,7 @@ export default class Game {
   move(fromSquare, toSquare) {
     const movingPiece = this.board[fromSquare.y][fromSquare.x];
 
-    if (movingPiece === "wk") {
+    if (movingPiece === 'wk') {
       const deltaX = toSquare.x - fromSquare.x;
 
       // kingside castle
@@ -93,7 +89,7 @@ export default class Game {
 
       this.canWhiteCastleQueenside = false;
       this.canWhiteCastleKingside = false;
-    } else if (movingPiece === "bk") {
+    } else if (movingPiece === 'bk') {
       const deltaX = toSquare.x - fromSquare.x;
 
       // kingside castle
@@ -117,13 +113,13 @@ export default class Game {
       this.canBlackCastleKingside = false;
     }
 
-    if (movingPiece === "wr") {
+    if (movingPiece === 'wr') {
       if (this.canWhiteCastleQueenside && fromSquare.x === 0) {
         this.canWhiteCastleQueenside = false;
       } else if (this.canWhiteCastleKingside && fromSquare.x === 7) {
         this.canWhiteCastleKingside = false;
       }
-    } else if (movingPiece === "br") {
+    } else if (movingPiece === 'br') {
       if (this.canBlackCastleQueenside && fromSquare.x === 0) {
         this.canBlackCastleQueenside = false;
       } else if (this.canBlackCastleKingside && fromSquare.x === 7) {
@@ -132,40 +128,40 @@ export default class Game {
     }
 
     this.board[toSquare.y][toSquare.x] = this.board[fromSquare.y][fromSquare.x];
-    this.board[fromSquare.y][fromSquare.x] = "";
+    this.board[fromSquare.y][fromSquare.x] = '';
 
     const deltaY = toSquare.y - fromSquare.y;
 
     // en passant capture
     if (
-      movingPiece === "wp" &&
+      movingPiece === 'wp' &&
       toSquare.x === this.blackEnPassant?.x &&
       toSquare.y === this.blackEnPassant?.y
     ) {
-      this.board[this.blackEnPassant.y + 1][this.blackEnPassant.x] = "";
+      this.board[this.blackEnPassant.y + 1][this.blackEnPassant.x] = '';
     } else if (
-      movingPiece === "bp" &&
+      movingPiece === 'bp' &&
       toSquare.x === this.whiteEnPassant?.x &&
       toSquare.y === this.whiteEnPassant?.y
     ) {
-      this.board[this.whiteEnPassant.y - 1][this.whiteEnPassant.x] = "";
+      this.board[this.whiteEnPassant.y - 1][this.whiteEnPassant.x] = '';
     }
 
     this.blackEnPassant = null;
     this.whiteEnPassant = null;
 
     // allow en passant
-    if (movingPiece === "wp" && deltaY === -2) {
+    if (movingPiece === 'wp' && deltaY === -2) {
       this.whiteEnPassant = { x: toSquare.x, y: toSquare.y + 1 };
-    } else if (movingPiece === "bp" && deltaY === 2) {
+    } else if (movingPiece === 'bp' && deltaY === 2) {
       this.blackEnPassant = { x: toSquare.x, y: toSquare.y - 1 };
     }
 
     // promotion
-    if (movingPiece === "wp" && toSquare.y === 0) {
-      this.board[toSquare.y][toSquare.x] = "wq";
-    } else if (movingPiece === "bp" && toSquare.y === 7) {
-      this.board[toSquare.y][toSquare.x] = "bq";
+    if (movingPiece === 'wp' && toSquare.y === 0) {
+      this.board[toSquare.y][toSquare.x] = 'wq';
+    } else if (movingPiece === 'bp' && toSquare.y === 7) {
+      this.board[toSquare.y][toSquare.x] = 'bq';
     }
 
     if (this.onMove) {

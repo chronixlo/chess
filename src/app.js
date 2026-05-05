@@ -1,7 +1,7 @@
-import { INITIAL_BOARD, PIECE_CHARACTERS } from "./consts";
-import { doCpuMove } from "./cpu";
-import Game from "./Game";
-import { getPieceSquare, toShort } from "./utils";
+import { INITIAL_BOARD, PIECE_CHARACTERS } from './consts';
+import { doCpuMove } from './cpu';
+import Game from './Game';
+import { getPieceSquare, toShort } from './utils';
 
 export class App {
   gameState = null;
@@ -10,26 +10,26 @@ export class App {
   piecesElement = null;
   cellsElement = null;
   statusText = null;
-  gameMode = "cpu"; // cpu | cvc | 1v1
+  gameMode = 'cpu'; // cpu | cvc | 1v1
 
   constructor() {
-    this.clickLayer = document.querySelector("#click-layer");
-    this.piecesElement = document.querySelector("#pieces");
-    this.cellsElement = document.querySelector("#cells");
-    this.statusText = document.querySelector("#status-text");
-    this.calculationsText = document.querySelector("#calculations");
-    this.moveText = document.querySelector("#move");
-    this.oneOnOneButton = document.querySelector("#oneOnOne");
-    this.cpuButton = document.querySelector("#cpu");
-    this.cvcButton = document.querySelector("#cvc");
+    this.clickLayer = document.querySelector('#click-layer');
+    this.piecesElement = document.querySelector('#pieces');
+    this.cellsElement = document.querySelector('#cells');
+    this.statusText = document.querySelector('#status-text');
+    this.calculationsText = document.querySelector('#calculations');
+    this.moveText = document.querySelector('#move');
+    this.oneOnOneButton = document.querySelector('#oneOnOne');
+    this.cpuButton = document.querySelector('#cpu');
+    this.cvcButton = document.querySelector('#cvc');
 
-    this.oneOnOneButton.addEventListener("click", () =>
-      this.setGameMode("1v1")
+    this.oneOnOneButton.addEventListener('click', () =>
+      this.setGameMode('1v1'),
     );
-    this.cpuButton.addEventListener("click", () => this.setGameMode("cpu"));
-    this.cvcButton.addEventListener("click", () => this.setGameMode("cvc"));
+    this.cpuButton.addEventListener('click', () => this.setGameMode('cpu'));
+    this.cvcButton.addEventListener('click', () => this.setGameMode('cvc'));
 
-    this.setGameMode("cpu");
+    this.setGameMode('cpu');
   }
 
   init() {
@@ -41,19 +41,19 @@ export class App {
 
     this.updateStatus();
     this.render();
-    this.calculationsText.innerHTML = "&nbsp;";
+    this.calculationsText.innerHTML = '&nbsp;';
 
     this.cellsElement
-      .querySelector(".last-move-from")
-      ?.classList.remove("last-move-from");
+      .querySelector('.last-move-from')
+      ?.classList.remove('last-move-from');
     this.cellsElement
-      .querySelector(".last-move-to")
-      ?.classList.remove("last-move-to");
+      .querySelector('.last-move-to')
+      ?.classList.remove('last-move-to');
     this.cellsElement
-      .querySelectorAll(".check")
-      .forEach((tile) => tile.classList.remove("check"));
+      .querySelectorAll('.check')
+      .forEach((tile) => tile.classList.remove('check'));
 
-    if (this.gameMode === "cvc") {
+    if (this.gameMode === 'cvc') {
       this.doCpuMove();
     }
   }
@@ -63,30 +63,30 @@ export class App {
     this.render();
 
     this.cellsElement
-      .querySelectorAll(".check")
-      .forEach((tile) => tile.classList.remove("check"));
+      .querySelectorAll('.check')
+      .forEach((tile) => tile.classList.remove('check'));
 
     if (this.gameState.blackChecked) {
-      const blackKing = getPieceSquare(this.gameState, "bk");
+      const blackKing = getPieceSquare(this.gameState, 'bk');
 
       const blackKingSquare = this.cellsElement.querySelector(
-        `.cell-${blackKing.x}-${blackKing.y}`
+        `.cell-${blackKing.x}-${blackKing.y}`,
       );
-      blackKingSquare.classList.add("check");
+      blackKingSquare.classList.add('check');
     }
 
     if (this.gameState.whiteChecked) {
-      const whiteKing = getPieceSquare(this.gameState, "wk");
+      const whiteKing = getPieceSquare(this.gameState, 'wk');
 
       const whiteKingSquare = this.cellsElement.querySelector(
-        `.cell-${whiteKing.x}-${whiteKing.y}`
+        `.cell-${whiteKing.x}-${whiteKing.y}`,
       );
-      whiteKingSquare.classList.add("check");
+      whiteKingSquare.classList.add('check');
     }
 
     if (
-      (this.gameState.turn === 1 && this.gameMode === "cpu") ||
-      this.gameMode === "cvc"
+      (this.gameState.turn === 1 && this.gameMode === 'cpu') ||
+      this.gameMode === 'cvc'
     ) {
       this.doCpuMove();
     }
@@ -95,46 +95,56 @@ export class App {
   doCpuMove() {
     setTimeout(() => {
       const d = Date.now();
+      const newGameState = new Game({
+        ...this.gameState,
+        onEndTurn: null,
+        onMove: null,
+      });
       const { count, bestMove } = doCpuMove(
-        this.gameState,
-        this.gameState.turn === 0 ? "w" : "b"
+        newGameState,
+        newGameState === 0 ? 'w' : 'b',
       );
 
       console.log(bestMove);
 
+      if (bestMove) {
+        this.gameState.move(bestMove.fromSquare, bestMove.toSquare);
+        this.gameState.endTurn();
+      }
+
       this.calculationsText.textContent = `Evaluated ${toShort(
-        count
+        count,
       )} positions in ${Math.round((Date.now() - d) / 100) / 10}s`;
     }, 100);
   }
 
   onMove = (fromSquare, toSquare) => {
     this.cellsElement
-      .querySelector(".last-move-from")
-      ?.classList.remove("last-move-from");
+      .querySelector('.last-move-from')
+      ?.classList.remove('last-move-from');
     this.cellsElement
-      .querySelector(".last-move-to")
-      ?.classList.remove("last-move-to");
+      .querySelector('.last-move-to')
+      ?.classList.remove('last-move-to');
 
     const fromSquareElement = this.cellsElement.querySelector(
-      `.cell-${fromSquare.x}-${fromSquare.y}`
+      `.cell-${fromSquare.x}-${fromSquare.y}`,
     );
-    fromSquareElement.classList.add("last-move-from");
+    fromSquareElement.classList.add('last-move-from');
 
     const targetSquare = this.cellsElement.querySelector(
-      `.cell-${toSquare.x}-${toSquare.y}`
+      `.cell-${toSquare.x}-${toSquare.y}`,
     );
-    targetSquare.classList.add("last-move-to");
+    targetSquare.classList.add('last-move-to');
   };
 
   render() {
-    this.piecesElement.innerHTML = "";
+    this.piecesElement.innerHTML = '';
 
     this.gameState.board.forEach((rank, y) => {
       rank.forEach((square, x) => {
-        if (square !== "") {
-          const element = document.createElement("div");
-          element.classList.add("piece", square[0] === "w" ? "white" : "black");
+        if (square !== '') {
+          const element = document.createElement('div');
+          element.classList.add('piece', square[0] === 'w' ? 'white' : 'black');
           element.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
           element.textContent = PIECE_CHARACTERS[square[1]];
 
@@ -145,15 +155,15 @@ export class App {
   }
 
   updateStatus() {
-    const color = this.gameState.turn === 0 ? "White" : "Black";
+    const color = this.gameState.turn === 0 ? 'White' : 'Black';
 
     let text;
-    if (this.gameMode === "1v1") {
-      text = color + " to move";
-    } else if (this.gameMode === "cpu") {
-      text = color + (this.gameState.turn === 0 ? " to move" : " thinking...");
+    if (this.gameMode === '1v1') {
+      text = color + ' to move';
+    } else if (this.gameMode === 'cpu') {
+      text = color + (this.gameState.turn === 0 ? ' to move' : ' thinking...');
     } else {
-      text = color + " thinking...";
+      text = color + ' thinking...';
     }
 
     this.statusText.textContent = text;
@@ -168,19 +178,19 @@ export class App {
     this.init();
 
     let selected;
-    if (mode === "cpu") {
+    if (mode === 'cpu') {
       selected = this.cpuButton;
-    } else if (mode === "1v1") {
+    } else if (mode === '1v1') {
       selected = this.oneOnOneButton;
-    } else if (mode === "cvc") {
+    } else if (mode === 'cvc') {
       selected = this.cvcButton;
     }
 
     [this.cpuButton, this.oneOnOneButton, this.cvcButton].forEach((el) =>
-      el.classList.remove("selected")
+      el.classList.remove('selected'),
     );
 
-    selected.classList.add("selected");
+    selected.classList.add('selected');
   }
 }
 

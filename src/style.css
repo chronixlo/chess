@@ -56,6 +56,7 @@ html {
   background: #ccc;
   font-family: inherit;
   flex: 1;
+  cursor: pointer;
 }
 
 #modes > button.selected {
@@ -115,14 +116,14 @@ html {
 }
 
 .cell.last-move-from::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: #8f84;
 }
 
 .cell.last-move-to::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: #9d94;
@@ -133,7 +134,7 @@ html {
 }
 
 .cell.valid-move::after {
-  content: "";
+  content: '';
   position: absolute;
   display: flex;
   justify-content: center;

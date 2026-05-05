@@ -1,26 +1,18 @@
-import { BOARD_SIZE, PIECE_VALUES } from "./consts";
-import Game from "./Game";
+import { BOARD_SIZE, PIECE_VALUES } from './consts';
 import {
   canBeCaptured,
   getIsOnTheEdge,
   getPieces,
   getValidPieceMovesNoCheck,
-} from "./utils";
+} from './utils';
 
 const MAX_DEPTH = 3;
-const MOVES_PER_DEPTH = {
-  0: 100,
-  1: 30,
-  2: 10,
-  3: 7,
-  4: 4,
-};
 
 export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
   let count = 0;
   const evaluation = getEvaluation(gameState);
 
-  const enemyColor = color === "b" ? "w" : "b";
+  const enemyColor = color === 'b' ? 'w' : 'b';
 
   let bestMove = null;
 
@@ -38,36 +30,38 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
       const squares = getValidPieceMovesNoCheck(
         gameState,
         square,
-        gameState.board[y][x]
+        gameState.board[y][x],
       );
 
       for (let destinationSquare of squares) {
         const willBeOnTheEdge = getIsOnTheEdge(
           destinationSquare.x,
-          destinationSquare.y
+          destinationSquare.y,
         );
 
         //   console.count("calcs");
-        let value = Math.random() * 0.1;
+        // let value = Math.random() * 0.1;
+        let value = 0;
 
-        const newGameState = new Game({
-          ...gameState,
-          onEndTurn: null,
-          onMove: null,
-        });
-        newGameState.move(square, destinationSquare);
-        newGameState.endTurn();
+        const lastMove = {
+          square,
+          destinationSquare,
+          piece: gameState.board[square.y][square.x],
+          destinationPiece:
+            gameState.board[destinationSquare.y][destinationSquare.x],
+        };
+
+        gameState.move(square, destinationSquare);
+        gameState.endTurn();
 
         count++;
 
-        if (
-          color === "w" ? newGameState.blackChecked : newGameState.whiteChecked
-        ) {
+        if (color === 'w' ? gameState.blackChecked : gameState.whiteChecked) {
           value += 0.2;
         }
 
         // avoid king moves besides castling
-        if (pieceType === "k") {
+        if (pieceType === 'k') {
           // prefer kingside
           if (destinationSquare.x - x === 2) {
             value += 0.6;
@@ -76,10 +70,10 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
           } else {
             value -= 0.5;
           }
-        } else if (pieceType === "p") {
+        } else if (pieceType === 'p') {
           // advance close to promotion
           const rank =
-            color === "b"
+            color === 'b'
               ? destinationSquare.y
               : BOARD_SIZE - 1 - destinationSquare.y;
 
@@ -97,7 +91,7 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
           }
         }
         // centralize knights
-        else if (pieceType === "n") {
+        else if (pieceType === 'n') {
           if (isOnTheEdge) {
             value += 0.5;
           }
@@ -106,7 +100,7 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
           }
         }
         // centralize bishops
-        else if (pieceType === "b") {
+        else if (pieceType === 'b') {
           if (isOnTheEdge) {
             value += 0.5;
           }
@@ -115,52 +109,87 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
           }
         }
         // centralize queens
-        else if (pieceType === "q") {
+        else if (pieceType === 'q') {
           if (willBeOnTheEdge) {
             value -= 0.2;
           }
         }
         // centralize rooks
-        else if (pieceType === "r") {
+        else if (pieceType === 'r') {
           if (willBeOnTheEdge) {
             value -= 0.2;
           }
         }
 
-        const evaluationDelta = getEvaluation(newGameState) - evaluation;
-        value += color === "b" ? -evaluationDelta : evaluationDelta;
+        const evaluationDelta = getEvaluation(gameState) - evaluation;
+        value += color === 'b' ? -evaluationDelta : evaluationDelta;
 
         const move = {
           fromSquare: square,
           toSquare: destinationSquare,
           value,
-          gameState: newGameState,
+          gameState,
+          lastMove,
         };
         moves.push(move);
+        // console.log(getBoardString(gameState.board))
+
+        // reset the board
+        gameState.board[move.lastMove.destinationSquare.y][
+          move.lastMove.destinationSquare.x
+        ] = move.lastMove.destinationPiece || '';
+        gameState.board[move.lastMove.square.y][move.lastMove.square.x] =
+          move.lastMove.piece;
+        gameState.endTurn();
+
+        // console.log(getBoardString(gameState.board))
+        // console.log(move.lastMove)
+
+        // if (depth === 1) {
+        //   throw 1
+        // }
       }
     }
   });
 
   moves.sort((a, b) => b.value - a.value);
 
-  moves = moves.slice(0, MOVES_PER_DEPTH[depth] || 2);
+  // moves = moves.slice(0, 2);
+  // console.log(moves.map(d => d.lastMove))
 
-  if (depth < MAX_DEPTH && runningCount < 1e6) {
+  if (depth < MAX_DEPTH) {
     moves.forEach((move) => {
       let value = move.value;
 
       let sub;
+
+      gameState.move(move.fromSquare, move.toSquare);
+      gameState.endTurn();
+
+      // console.log(depth)
+      // console.log(getBoardString(gameState.board))
+
       const calculations = doCpuMove(
         move.gameState,
         enemyColor,
         depth + 1,
-        count + runningCount
+        count + runningCount,
       );
+
+      // reset the board
+      gameState.board[move.lastMove.destinationSquare.y][
+        move.lastMove.destinationSquare.x
+      ] = move.lastMove.destinationPiece || '';
+      gameState.board[move.lastMove.square.y][move.lastMove.square.x] =
+        move.lastMove.piece;
+      gameState.endTurn();
+
       count += calculations.count;
 
       if (calculations.bestMove) {
         sub = calculations.bestMove;
-        value -= calculations.bestMove.value / 1.1;
+        value -= calculations.bestMove.value;
+        // value -= calculations.bestMove.value / 1.1;
       } else {
         // mate, both false is stalemate
         if (move.gameState.blackChecked || move.gameState.whiteChecked) {
@@ -187,7 +216,7 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
           next.gameState,
           next.toSquare,
           occupyingPiece[0],
-          occupyingPiece[1] !== "k"
+          occupyingPiece[1] !== 'k',
         );
         const newValue =
           next.value - (canBeTaken ? PIECE_VALUES[occupyingPiece[1]] : 0);
@@ -203,11 +232,6 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
     }, null);
   }
 
-  if (bestMove) {
-    gameState.move(bestMove.fromSquare, bestMove.toSquare);
-    gameState.endTurn();
-  }
-
   return { bestMove, count };
 }
 
@@ -216,6 +240,6 @@ function getEvaluation(gameState) {
     if (!next) {
       return prev;
     }
-    return prev + PIECE_VALUES[next[1]] * (next[0] === "w" ? 1 : -1);
+    return prev + PIECE_VALUES[next[1]] * (next[0] === 'w' ? 1 : -1);
   }, 0);
 }
