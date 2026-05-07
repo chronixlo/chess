@@ -49,6 +49,8 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
           piece: gameState.board[square.y][square.x],
           destinationPiece:
             gameState.board[destinationSquare.y][destinationSquare.x],
+          whiteChecked: gameState.whiteChecked,
+          blackChecked: gameState.blackChecked,
         };
 
         gameState.move(square, destinationSquare);
@@ -140,7 +142,11 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
         ] = move.lastMove.destinationPiece || '';
         gameState.board[move.lastMove.square.y][move.lastMove.square.x] =
           move.lastMove.piece;
-        gameState.endTurn();
+
+        gameState.turn = 1 - gameState.turn;
+        gameState.moves--;
+        gameState.whiteChecked = move.lastMove.whiteChecked;
+        gameState.blackChecked = move.lastMove.blackChecked;
 
         // console.log(getBoardString(gameState.board))
         // console.log(move.lastMove)
@@ -182,7 +188,11 @@ export function doCpuMove(gameState, color, depth = 0, runningCount = 0) {
       ] = move.lastMove.destinationPiece || '';
       gameState.board[move.lastMove.square.y][move.lastMove.square.x] =
         move.lastMove.piece;
-      gameState.endTurn();
+
+      gameState.turn = 1 - gameState.turn;
+      gameState.moves--;
+      gameState.whiteChecked = move.lastMove.whiteChecked;
+      gameState.blackChecked = move.lastMove.blackChecked;
 
       count += calculations.count;
 
